@@ -1,0 +1,66 @@
+{# templates/projection/index.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Projection en direct 📸</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 16px;
+        }
+
+        .gallery img {
+            max-width: 300px;
+            max-height: 300px;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        h1 {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>📸 Projection en direct</h1>
+<div class="gallery" id="gallery">
+    <!-- Images en temps réel -->
+</div>
+
+<script>
+    const gallery = document.getElementById('gallery')
+
+    const eventSource = new EventSource('http://localhost:1337/.well-known/mercure?topic=https://example.com/photos/new')
+
+    eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        const img = document.createElement('img')
+        img.src = data.url
+        img.alt = 'Nouvelle photo'
+        gallery.prepend(img) // Affiche la photo en haut
+    }
+
+    eventSource.onerror = (error) => {
+        console.error("Erreur Mercure :", error)
+    }
+</script>
+</body>
+</html>
