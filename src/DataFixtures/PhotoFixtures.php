@@ -28,7 +28,7 @@ class PhotoFixtures extends Fixture implements DependentFixtureInterface
             // Associer un groupe existant (généré par GroupFixtures avec addReference)
             $randomGroupIndex = $faker->numberBetween(0, 4); // ajuster selon le nombre de groupes créés
             $group = $this->getReference('group_' . $randomGroupIndex, Group::class);
-            $photo->setGroupId($group);
+            $photo->setGroup($group);
 
             $manager->persist($photo);
         }

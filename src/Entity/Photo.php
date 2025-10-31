@@ -27,7 +27,7 @@ class Photo
 
     #[ORM\ManyToOne(inversedBy: 'photos')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Group $group_id = null;
+    private ?Group $group = null;
 
     public function getId(): ?int
     {
@@ -82,14 +82,14 @@ class Photo
         return $this;
     }
 
-    public function getGroupId(): ?Group
+    public function getGroup(): ?Group
     {
-        return $this->group_id;
+        return $this->group;
     }
 
-    public function setGroupId(?Group $group_id): static
+    public function setGroup(?Group $group): static
     {
-        $this->group_id = $group_id;
+        $this->group = $group;
 
         return $this;
     }

@@ -30,8 +30,8 @@ class UserGroupFixtures extends Fixture implements DependentFixtureInterface
                 $group = $this->getReference('group_' . $groupIndex, Group::class);
 
                 $userGroup = new UserGroup();
-                $userGroup->setUserId($user);
-                $userGroup->setGroupId($group);
+                $userGroup->setUser($user);
+                $userGroup->setGroup($group);
                 $userGroup->setRole($faker->randomElement($roles));
                 $userGroup->setCreatedAt(new \DateTimeImmutable($faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s')));
 

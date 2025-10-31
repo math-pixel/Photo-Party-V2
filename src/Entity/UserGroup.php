@@ -21,37 +21,37 @@ class UserGroup
 
     #[ORM\ManyToOne(inversedBy: 'userGroups')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'userGroups')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?group $group_id = null;
+    private ?Group $group = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(User $user_id): static
+    public function setUser(User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getGroupId(): ?Group
+    public function getGroup(): ?Group
     {
-        return $this->group_id;
+        return $this->group;
     }
 
-    public function setGroupId(Group $group_id): static
+    public function setGroup(Group $group): static
     {
-        $this->group_id = $group_id;
+        $this->group = $group;
 
         return $this;
     }
