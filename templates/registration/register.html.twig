@@ -1,202 +1,95 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Rejoignez la fête !{% endblock %}
-
-{# On ajoute un bloc pour le CSS spécifique à cette page #}
-{% block stylesheets %}
-    {{ parent() }} {# Si vous avez d'autres styles dans base.html.twig #}
-    <style>
-        /* Pour une meilleure expérience, ajoutons une police festive depuis Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-        /* -- Arrière-plan festif et animé -- */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden; /* Cache les confettis qui sortent de l'écran */
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* -- Le conteneur du formulaire (effet verre dépoli) -- */
-        .registration-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 2.5em;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 100%;
-            max-width: 450px;
-            z-index: 10;
-        }
-
-        /* -- Titre -- */
-        h1 {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 1em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        /* -- Style des champs du formulaire générés par Symfony -- */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .form-group input[type="email"],
-        .form-group input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #fff;
-            box-shadow: 0 0 10px rgba(231, 60, 126, 0.5);
-        }
-
-        /* Style pour la checkbox "agreeTerms" */
-        .form-group-agree {
-            display: flex;
-            align-items: center;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-group-agree input[type="checkbox"] {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-        }
-
-        /* -- Le bouton festif -- */
-        button[type="submit"] {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(90deg, #ff8c00 0%, #ff0080 100%);
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            text-transform: uppercase;
-        }
-
-        button[type="submit"]:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        /* -- Animation des confettis -- */
-        .confetti-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #f0f;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotateZ(360deg);
-            }
-        }
-
-        /* Génère des confettis de différentes couleurs, tailles et vitesses */
-        {% for i in 1..20 %}
-        .confetti:nth-child({{ i }}) {
-            left: {{ random(0, 100) }}%;
-            background-color: {{ random(['#ffc300', '#ff5733', '#c70039', '#900c3f', '#581845', '#00d4ff', '#ff0080']) }};
-            width: {{ random(5, 15) }}px;
-            height: {{ random(5, 15) }}px;
-            animation-duration: {{ random(5, 15) }}s;
-            animation-delay: -{{ random(0, 10) }}s;
-            opacity: {{ random(5, 10) / 10 }};
-        }
-        {% endfor %}
-
-    </style>
-{% endblock %}
+{% block title %}Inscription - Photo Gallery{% endblock %}
 
 {% block body %}
-    {# Conteneur pour l'animation des confettis #}
-    <div class="confetti-container">
-        {# Twig génère les div pour les confettis. Pas besoin de les écrire à la main ! #}
-        {% for i in 1..20 %}
-            <div class="confetti"></div>
-        {% endfor %}
-    </div>
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md">
+            <!-- Logo/Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Community Photos</h1>
+                <p class="text-gray-600">Créez votre compte</p>
+            </div>
 
-    <div class="registration-card">
-        <h1>Créez votre compte</h1>
+            <!-- Form Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 space-y-6">
 
-        {# On ajoute des classes CSS pour cibler les éléments générés par Symfony #}
-        {{ form_start(registrationForm) }}
-        <div class="form-group">
-            {{ form_label(registrationForm.email) }}
-            {{ form_widget(registrationForm.email) }}
-            {{ form_errors(registrationForm.email) }}
+                {% if form_errors(registrationForm) %}
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                        <p class="font-semibold">Erreurs d'inscription :</p>
+                        {{ form_errors(registrationForm) }}
+                    </div>
+                {% endif %}
+
+                {{ form_start(registrationForm, {'attr': {'class': 'space-y-5'}}) }}
+
+                <!-- Email Field -->
+                <div>
+                    {{ form_label(registrationForm.email, 'Adresse email', {'label_attr': {'class': 'block text-sm font-medium text-gray-900 mb-2'}}) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition', 'placeholder': 'vous@exemple.com'}}) }}
+                    {% if form_errors(registrationForm.email) %}
+                        <p class="mt-1 text-red-600 text-sm">{{ form_errors(registrationForm.email) }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- First Name -->
+{#                <div>#}
+{#                    {{ form_label(registrationForm.firstName, 'Prénom', {'label_attr': {'class': 'block text-sm font-medium text-gray-900 mb-2'}}) }}#}
+{#                    {{ form_widget(registrationForm.firstName, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition', 'placeholder': 'Jean'}}) }}#}
+{#                </div>#}
+
+                <!-- Last Name -->
+{#                <div>#}
+{#                    {{ form_label(registrationForm.lastName, 'Nom', {'label_attr': {'class': 'block text-sm font-medium text-gray-900 mb-2'}}) }}#}
+{#                    {{ form_widget(registrationForm.lastName, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition', 'placeholder': 'Dupont'}}) }}#}
+{#                </div>#}
+
+                <!-- Password Field -->
+                <div>
+                    {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'block text-sm font-medium text-gray-900 mb-2'}}) }}
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition', 'placeholder': '••••••••'}}) }}
+                    <p class="mt-1 text-gray-500 text-xs">Minimum 8 caractères</p>
+                </div>
+
+                <!-- Confirm Password Field -->
+{#                <div>#}
+{#                    {{ form_label(registrationForm.plainPassword, 'Confirmer le mot de passe', {'label_attr': {'class': 'block text-sm font-medium text-gray-900 mb-2'}}) }}#}
+{#                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition', 'placeholder': '••••••••'}}) }}#}
+{#                </div>#}
+
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+                >
+                    S'inscrire
+                </button>
+
+                {{ form_end(registrationForm) }}
+
+                <!-- Divider -->
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">ou</span>
+                    </div>
+                </div>
+
+                <!-- Login Link -->
+                <p class="text-center text-gray-600 text-sm">
+                    Déjà inscrit ?
+                    <a href="{{ path('app_login') }}" class="text-teal-600 hover:text-teal-700 font-semibold">
+                        Se connecter
+                    </a>
+                </p>
+            </div>
+
+            <!-- Footer Link -->
+            <p class="text-center text-gray-500 text-xs mt-6">
+                <a href="/" class="hover:text-gray-700">← Retour à l'accueil</a>
+            </p>
         </div>
-
-        <div class="form-group">
-            {{ form_label(registrationForm.plainPassword, 'Mot de passe') }}
-            {{ form_widget(registrationForm.plainPassword) }}
-            {{ form_errors(registrationForm.plainPassword) }}
-        </div>
-
-        {# On utilise une div dédiée pour mieux aligner la checkbox #}
-        <div class="form-group-agree">
-            {{ form_widget(registrationForm.agreeTerms) }}
-            {{ form_label(registrationForm.agreeTerms) }}
-        </div>
-        {{ form_errors(registrationForm.agreeTerms) }}
-
-        {{ form_errors(registrationForm) }}
-
-        <button type="submit" class="btn">S'inscrire</button>
-        {{ form_end(registrationForm) }}
     </div>
 {% endblock %}

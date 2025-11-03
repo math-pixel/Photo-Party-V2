@@ -1,208 +1,103 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bienvenue !{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* On réutilise exactement le même style que pour la page d'inscription */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-        /* -- Arrière-plan festif et animé -- */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #23a6d5, #23d5ab, #ee7752, #e73c7e);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* -- Le conteneur du formulaire (effet verre dépoli) -- */
-        .auth-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 2.5em;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 100%;
-            max-width: 450px;
-            z-index: 10;
-        }
-
-        /* -- Titre -- */
-        h1 {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 1em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        /* -- Style des champs du formulaire -- */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .form-group input[type="email"],
-        .form-group input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #fff;
-            box-shadow: 0 0 10px rgba(35, 166, 213, 0.5);
-        }
-
-        /* -- Le bouton festif -- */
-        button[type="submit"] {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(90deg, #23a6d5 0%, #23d5ab 100%);
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            text-transform: uppercase;
-        }
-
-        button[type="submit"]:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Style pour le message d'erreur */
-        .alert-danger {
-            background-color: rgba(220, 53, 69, 0.5); /* Rouge semi-transparent */
-            color: #fff;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(220, 53, 69, 0.8);
-            text-align: center;
-        }
-
-        /* Style pour le message "Vous êtes connecté" */
-        .logged-in-message {
-            text-align: center;
-            font-size: 1.1em;
-        }
-        .logged-in-message a {
-            color: #ffc300; /* Une couleur dorée pour se démarquer */
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        /* -- Animation des confettis -- */
-        .confetti-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #f0f;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotateZ(360deg);
-            }
-        }
-
-        {% for i in 1..20 %}
-        .confetti:nth-child({{ i }}) {
-            left: {{ random(0, 100) }}%;
-            background-color: {{ random(['#ffc300', '#ff5733', '#c70039', '#900c3f', '#581845', '#00d4ff', '#ff0080']) }};
-            width: {{ random(5, 15) }}px;
-            height: {{ random(5, 15) }}px;
-            animation-duration: {{ random(5, 15) }}s;
-            animation-delay: -{{ random(0, 10) }}s;
-            opacity: {{ random(5, 10) / 10 }};
-        }
-        {% endfor %}
-    </style>
-{% endblock %}
+{% block title %}Connexion - Photo Gallery{% endblock %}
 
 {% block body %}
-    <div class="confetti-container">
-        {% for i in 1..20 %}
-            <div class="confetti"></div>
-        {% endfor %}
-    </div>
-
-    <div class="auth-card">
-
-        {% if app.user %}
-            <div class="logged-in-message">
-                Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md">
+            <!-- Logo/Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Community Photos</h1>
+                <p class="text-gray-600">Connectez-vous à votre compte</p>
             </div>
-        {% else %}
-            <h1>Connexion</h1>
 
-            <form method="post">
+            <!-- Form Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 space-y-6">
+
                 {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                        {{ error.messageKey | trans(error.messageData, 'security') }}
+                    </div>
                 {% endif %}
 
-                <div class="form-group">
-                    <label for="inputEmail">Email</label>
-                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="votre.email@exemple.com" autocomplete="email" required autofocus>
+                <form method="post" class="space-y-5">
+                    <!-- Email Field -->
+                    <div>
+                        <label for="inputEmail" class="block text-sm font-medium text-gray-900 mb-2">
+                            Adresse email
+                        </label>
+                        <input
+                            type="email"
+                            id="inputEmail"
+                            name="email"
+                            value="{{ last_username }}"
+                            required
+                            autofocus
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                            placeholder="vous@exemple.com"
+                        >
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="inputPassword" class="block text-sm font-medium text-gray-900 mb-2">
+                            Mot de passe
+                        </label>
+                        <input
+                            type="password"
+                            id="inputPassword"
+                            name="password"
+                            required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                            placeholder="••••••••"
+                        >
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            name="_remember_me"
+                            class="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer"
+                        >
+                        <label for="remember" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+                    >
+                        Se connecter
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">ou</span>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="inputPassword">Mot de passe</label>
-                    <input type="password" name="password" id="inputPassword" placeholder="●●●●●●●●" autocomplete="current-password" required>
-                </div>
+                <!-- Register Link -->
+                <p class="text-center text-gray-600 text-sm">
+                    Pas encore de compte ?
+                    <a href="{{ path('app_register') }}" class="text-teal-600 hover:text-teal-700 font-semibold">
+                        S'inscrire
+                    </a>
+                </p>
+            </div>
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <button type="submit">
-                    Se connecter
-                </button>
-            </form>
-        {% endif %}
+            <!-- Footer Link -->
+            <p class="text-center text-gray-500 text-xs mt-6">
+                <a href="/" class="hover:text-gray-700">← Retour à l'accueil</a>
+            </p>
+        </div>
     </div>
 {% endblock %}
