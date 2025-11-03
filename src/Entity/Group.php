@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: '`Group`')]
@@ -48,6 +49,12 @@ class Group
     {
         $this->userGroups = new ArrayCollection();
         $this->photos = new ArrayCollection();
+
+        // Génération automatique du token (UUID v4)
+        $this->token = Uuid::v6()->toRfc4122();
+
+        // Génération automatique de la date de création
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -137,8 +144,8 @@ class Group
     {
         if ($this->userGroups->removeElement($userGroup)) {
             // set the owning side to null (unless already changed)
-            if ($userGroup->getGroupId() === $this) {
-                $userGroup->setGroupId(null);
+            if ($userGroup->getGroup() === $this) {
+                $userGroup->setGroup(null);
             }
         }
 
@@ -157,7 +164,7 @@ class Group
     {
         if (!$this->photos->contains($photo)) {
             $this->photos->add($photo);
-            $photo->setGroupId($this);
+            $photo->setGroup($this);
         }
 
         return $this;
@@ -167,8 +174,8 @@ class Group
     {
         if ($this->photos->removeElement($photo)) {
             // set the owning side to null (unless already changed)
-            if ($photo->getGroupId() === $this) {
-                $photo->setGroupId(null);
+            if ($photo->getGroup() === $this) {
+                $photo->setGroup(null);
             }
         }
 

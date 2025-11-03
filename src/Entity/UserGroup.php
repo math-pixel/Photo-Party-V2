@@ -17,7 +17,7 @@ class UserGroup
     private ?string $role = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $created_at;
 
     #[ORM\ManyToOne(inversedBy: 'userGroups')]
     #[ORM\JoinColumn(nullable: false)]
@@ -26,6 +26,11 @@ class UserGroup
     #[ORM\ManyToOne(inversedBy: 'userGroups')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Group $group = null;
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -79,4 +84,11 @@ class UserGroup
 
         return $this;
     }
+}
+
+enum GroupRole: string
+{
+    case ADMIN = 'ROLE_ADMIN';
+    case MEMBER = 'ROLE_MEMBER';
+    case MODERATOR = 'ROLE_MODERATOR';
 }
