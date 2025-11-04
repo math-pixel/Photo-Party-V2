@@ -1,0 +1,32 @@
+{% if is_granted('IS_AUTHENTICATED') %}
+    <header class="bg-white shadow-sm border-b border-gray-200 z-50">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Email à gauche -->
+            <div class="flex-1">
+                <span class="text-sm font-medium text-gray-700">
+                    {{ app.user.email }}
+                </span>
+            </div>
+
+            <!-- Logout à droite -->
+            <div class="flex-1 flex justify-end text-white">
+                <a href="{{ path('app_logout') }}"
+                   class="btn px-4 py-2 text-sm font-medium bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors duration-200 text-white">
+                    Logout
+                </a>
+            </div>
+
+            <form action="{{ path('app_logout') }}">
+                <button
+                    type="submit"
+                    class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+                >
+                    Se déconnecter
+                </button>
+            </form>
+
+        </div>
+    </div>
+</header>
+{% endif %}
