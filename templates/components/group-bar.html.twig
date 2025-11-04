@@ -1,0 +1,89 @@
+<div class="group-bar" data-group-id="{{ group.id }}" x-data="{ isOpen: false }">
+    <!-- BARRE PRINCIPALE (toujours visible) -->
+    <button
+        @click="isOpen = !isOpen"
+        class="w-full flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200"
+    >
+        <!-- CÔTÉ GAUCHE : Flèche + Nom -->
+        <div class="flex items-center gap-4">
+            <!-- Flèche de toggle -->
+            <svg
+                class="w-5 h-5 text-gray-600 transition-transform duration-200"
+                :class="{ 'rotate-90': isOpen }"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+
+            <!-- Nom du groupe -->
+            <span class="text-lg font-semibold text-gray-900">{{ group.name }}</span>
+        </div>
+
+        <!-- CÔTÉ DROIT : Logo partager -->
+        <svg
+            class="w-5 h-5 text-gray-600 hover:text-teal-600 transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C9.839 15.800 11.799 17.757 14.257 18.872m0 0l4.172-4.172a1 1 0 00-1.414-1.414l-4.172 4.172m0 0l-7.071-7.071m7.071 7.071L3.172 3.172a1 1 0 011.414-1.414l14.142 14.142" />
+        </svg>
+    </button>
+
+    <!-- CONTENU DÉPLIABLE (visible quand isOpen = true) -->
+    <div
+        class="bg-gray-50 border-b border-gray-200 overflow-hidden transition-all duration-300"
+        :class="{ 'max-h-20': isOpen, 'max-h-0': !isOpen }"
+    >
+        <div class="flex items-center justify-between px-6 py-3">
+            <!-- CÔTÉ GAUCHE : Date de création -->
+            <span class="text-sm text-gray-600">
+        Créé le {{ group.createdAt|date('d/m/Y') }}
+      </span>
+
+            <!-- CÔTÉ DROIT : Icônes édition et paramètres -->
+            <div class="flex items-center gap-4">
+                <!-- Icône édition -->
+                <button
+                    class="p-2 rounded-lg hover:bg-gray-200 transition-colors"
+                    title="Éditer le groupe"
+                >
+                    <svg
+                        class="w-5 h-5 text-gray-600 hover:text-teal-600 transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </button>
+
+                <!-- Icône paramètres -->
+                <button
+                    class="p-2 rounded-lg hover:bg-gray-200 transition-colors"
+                    title="Paramètres du groupe"
+                >
+                    <svg
+                        class="w-5 h-5 text-gray-600 hover:text-teal-600 transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alpine.js requis pour x-data et @click -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+    /* Animation smooth du toggle */
+    [x-cloak] { display: none; }
+</style>

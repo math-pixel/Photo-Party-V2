@@ -126,11 +126,9 @@
 {% endblock %}
 
 {% block body %}
-    <div class="confetti-container">
-        {% for i in 1..30 %} {# Plus de confettis pour la célébration ! #}
-            <div class="confetti"></div>
-        {% endfor %}
-    </div>
+    {% for group in groups %}
+        {% include 'components/group-bar.html.twig' with { group: group } %}
+    {% endfor %}
 
     <div class="welcome-card">
         <h1>
