@@ -2,454 +2,162 @@
 
 {% block title %}{{ group.name }}{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            color: #fff;
-            margin: 0;
-            padding: 2rem 1rem;
-            min-height: 100vh;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Header du groupe */
-        .group-header {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2em;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .group-header h1 {
-            font-size: 2.5em;
-            margin: 0 0 0.5em 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .group-meta {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .meta-item strong {
-            opacity: 0.8;
-        }
-
-        /* Token avec bouton copier */
-        .token-container {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .token-value {
-            font-family: monospace;
-            font-size: 1.1em;
-            word-break: break-all;
-        }
-
-        .btn-copy {
-            padding: 0.5rem 1rem;
-            background: #f1c40f;
-            color: #333;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .btn-copy:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        /* Images de couverture */
-        .group-images {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .group-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        /* Sections */
-        .section {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2em;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            margin-bottom: 2rem;
-        }
-
-        .section h2 {
-            font-size: 1.8em;
-            margin-top: 0;
-            margin-bottom: 1em;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-            padding-bottom: 0.5em;
-        }
-
-        /* Liste des membres */
-        .members-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .member-card {
-            background: rgba(0, 0, 0, 0.15);
-            padding: 1rem;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-
-        .member-card:hover {
-            background: rgba(0, 0, 0, 0.25);
-            transform: translateY(-2px);
-        }
-
-        .member-info {
-            flex-grow: 1;
-        }
-
-        .member-name {
-            font-weight: bold;
-            margin-bottom: 0.3rem;
-        }
-
-        .member-role {
-            display: inline-block;
-            padding: 0.2em 0.6em;
-            border-radius: 5px;
-            font-size: 0.85em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .role-admin { background-color: #f1c40f; color: #333; }
-        .role-moderator { background-color: #e67e22; color: #fff; }
-        .role-member { background-color: #3498db; color: #fff; }
-
-        /* Galerie de photos */
-        .photos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .photo-item {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            aspect-ratio: 1;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .photo-item:hover {
-            transform: scale(1.05);
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .photo-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-            padding: 0.5rem;
-            font-size: 0.85em;
-        }
-
-        /* Boutons d'action */
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
-        }
-
-        .btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(90deg, #eb3349 0%, #f45c43 100%);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        /* État vide */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .empty-state p {
-            font-size: 1.2em;
-            opacity: 0.8;
-            margin-bottom: 1rem;
-        }
-
-        /* Badge de compte */
-        .count-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.2em 0.6em;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin-left: 0.5rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .group-header h1 {
-                font-size: 1.8em;
-            }
-
-            .members-grid,
-            .photos-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-    <div class="container">
+    <div class="min-h-screen bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {# Header du groupe avec les infos principales #}
-        <div class="group-header">
-            <h1>{{ group.name }}</h1>
+            {# Header du groupe avec les infos principales #}
+            <div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-6 border border-gray-200">
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">{{ group.name }}</h1>
 
-            <div class="group-meta">
-                <div class="meta-item">
-                    <strong>📅 Créé le :</strong>
-                    <span>{{ group.createdAt|date('d/m/Y à H:i') }}</span>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">📅 Créé le :</span>
+                        <span class="text-gray-600">{{ group.createdAt|date('d/m/Y à H:i') }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">👥 Membres :</span>
+                        <span class="text-gray-600">{{ group.usergroups|length }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">📸 Photos :</span>
+                        <span class="text-gray-600">{{ group.photos|length }}</span>
+                    </div>
                 </div>
-                <div class="meta-item">
-                    <strong>👥 Membres :</strong>
 
+                {# Token pour partager le groupe #}
+                <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <p class="font-semibold text-gray-700 mb-2">🔗 Lien de partage :</p>
+                        <div class="font-mono text-sm text-gray-600 break-all" id="groupToken">{{ group.token }}</div>
+                    </div>
+                    <button onclick="copyToken()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-colors duration-200 whitespace-nowrap">
+                        📋 Copier
+                    </button>
                 </div>
 
-                <div class="meta-item">
-                    <strong>📸 Photos :</strong>
+                {# Images de couverture #}
+                {% if group.urlImage1 or group.urlImage2 %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        {% if group.urlImage1 %}
+                            <img src="{{ group.urlImage1 }}" alt="Image de couverture" class="w-full h-48 object-cover rounded-lg border border-gray-200">
+                        {% endif %}
+                        {% if group.urlImage2 %}
+                            <img src="{{ group.urlImage2 }}" alt="Image secondaire" class="w-full h-48 object-cover rounded-lg border border-gray-200">
+                        {% endif %}
+                    </div>
+                {% endif %}
 
-                </div>
+                {# Boutons d'action (seulement pour les admins/modérateurs) #}
+                {% if userRole is defined and userRole == "ROLE_ADMIN" %}
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="{{ path('app_main', {'id': group.id}) }}" class="btn px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-colors duration-200 text-center">
+                            ⚙️ Paramètres du groupe
+                        </a>
+                        <a href="{{ path('app_main', {'id': group.id}) }}" class="btn px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-colors duration-200 text-center">
+                            ➕ Inviter des membres
+                        </a>
+                    </div>
+                {% endif %}
             </div>
 
-            {# Token pour partager le groupe #}
-            <div class="token-container">
-                <div>
-                    <strong>🔗 Lien de partage :</strong>
-                    <div class="token-value" id="groupToken">{{ group.token }}</div>
-                </div>
-                <button class="btn-copy" onclick="copyToken()">📋 Copier</button>
-            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-6 border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200">
+                    👥 Membres
+                </h2>
 
-            {# Images de couverture #}
-            {% if group.urlImage1 or group.urlImage2 %}
-                <div class="group-images">
-                    {% if group.urlImage1 %}
-                        <img src="{{ group.urlImage1 }}" alt="Image de couverture" class="group-image">
-                    {% endif %}
-                    {% if group.urlImage2 %}
-                        <img src="{{ group.urlImage2 }}" alt="Image secondaire" class="group-image">
-                    {% endif %}
-                </div>
-            {% endif %}
-
-            {# Boutons d'action (seulement pour les admins/modérateurs) #}
-            {% if userRole is defined and userRole == "ROLE_ADMIN" %}
-                <div class="action-buttons">
-                    <a href="{{ path('app_main', {'id': group.id}) }}" class="btn btn-primary">
-                        ⚙️ Paramètres du groupe
-                    </a>
-                    <a href="{{ path('app_main', {'id': group.id}) }}" class="btn btn-success">
-                        ➕ Inviter des membres
-                    </a>
-                </div>
-            {% endif %}
-        </div>
-
-        {# Section Membres #}
-        <div class="section">
-            <h2>
-                👥 Membres
-            </h2>
-
-            {% if group.userGroups|length > 0 %}
-                <div class="members-grid">
-                    {% for userGroup in group.userGroups %}
-                        <div class="member-card">
-                            <div class="member-info">
-                                <div class="member-name">
-                                    {{ userGroup.user.userIdentifier }}
-                                </div>
-                                <span class="member-role role-{{ userGroup.role.value|lower|replace({'role_': ''}) }}">
-                                    {{ userGroup.role.label }}
+                {% if group.userGroups|length > 0 %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {% for userGroup in group.userGroups %}
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-gray-100 transition-colors duration-200 flex justify-between items-start">
+                                <div class="flex-grow">
+                                    <div class="font-semibold text-gray-900 mb-2">
+                                        {{ userGroup.user.userIdentifier }}
+                                    </div>
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold
+                                    {% if userGroup.role == 'ROLE_ADMIN' %}
+                                        bg-yellow-100 text-yellow-800
+                                    {% elseif userGroup.role == 'ROLE_MODERATOR' %}
+                                        bg-orange-100 text-orange-800
+                                    {% else %}
+                                        bg-blue-100 text-blue-800
+                                    {% endif %}
+                                ">
+                                    {{ userGroup.role }}
                                 </span>
-                            </div>
-
-                            {# Boutons d'action pour les admins #}
-                            {% if userRole is defined and userRole == constant('App\\Enum\\GroupRole::ADMIN') and userGroup.user != app.user %}
-                                <div class="member-actions">
-                                    {# Ici vous pouvez ajouter des boutons pour promouvoir/rétrograder/supprimer #}
                                 </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <p>Aucun membre pour le moment.</p>
-                    <a href="{{ path('app_group_invite', {'id': group.id}) }}" class="btn btn-success">
-                        Inviter des membres
-                    </a>
-                </div>
-            {% endif %}
-        </div>
 
-        {# Section Photos #}
-        <div class="section">
-            <h2>
-                📸 Galerie
-                <span class="count-badge">{{ group.photos|length }}</span>
-            </h2>
-
-            {% if group.photos|length > 0 %}
-                <div class="photos-grid">
-                    {% for photo in group.photos %}
-                        <div class="photo-item" onclick="openPhoto('{{ photo.url }}')">
-                            <img src="{{ photo.url }}" alt="Photo {{ loop.index }}">
-                            <div class="photo-overlay">
-                                <div>Par {{ photo.userId.userIdentifier }}</div>
-                                <div>{{ photo.createdAt|date('d/m/Y') }}</div>
+{#                                 Boutons d'action pour les admins#}
+{#                                {% if userRole is defined and userRole == constant('App\\Enum\\GroupRole::ADMIN') and userGroup.user != app.user %}#}
+{#                                    <div class="ml-2">#}
+{#                                         Ici vous pouvez ajouter des boutons pour promouvoir/rétrograder/supprimer#}
+{#                                    </div>#}
+{#                                {% endif %}#}
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <p>Aucune photo n'a encore été ajoutée.</p>
-                    <a href="{{ path('app_photo_upload', {'groupId': group.id}) }}" class="btn btn-success">
-                        📤 Ajouter des photos
-                    </a>
-                </div>
-            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="bg-gray-50 rounded-lg p-8 text-center">
+                        <p class="text-gray-600 mb-4">Aucun membre pour le moment.</p>
+                        <a href="{{ path('app_group_invite', {'id': group.id}) }}" class="inline-block px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-colors duration-200">
+                            Inviter des membres
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-6 border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200 flex items-center justify-between">
+                    📸 Galerie
+                    <span class="ml-2 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-lg font-semibold">{{ group.photos|length }}</span>
+                </h2>
+
+                {% if group.photos|length > 0 %}
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {% for photo in group.photos %}
+                            <div onclick="openPhoto('{{ photo.url }}')" class="relative rounded-lg overflow-hidden aspect-square cursor-pointer hover:shadow-lg transition-shadow duration-200 group">
+                                <img src="{{ photo.url }}" alt="Photo {{ loop.index }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-3">
+                                    <div class="text-white text-xs">Par {{ photo.userId.userIdentifier }}</div>
+                                    <div class="text-white text-xs">{{ photo.createdAt|date('d/m/Y') }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="bg-gray-50 rounded-lg p-8 text-center">
+                        <p class="text-gray-600 mb-4">Aucune photo n'a encore été ajoutée.</p>
+                    </div>
+                {% endif %}
+            </div>
+
         </div>
 
-        {# Bouton retour #}
-        <div style="text-align: center; margin-top: 2rem;">
-            <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">
-                ← Retour à mes groupes
-            </a>
-        </div>
+        <script>
+            function copyToken() {
+                const tokenText = document.getElementById('groupToken').textContent;
 
+                navigator.clipboard.writeText(tokenText).then(() => {
+                    const button = event.target;
+                    const originalText = button.textContent;
+
+                    button.textContent = '✅ Copié !';
+                    button.classList.remove('bg-teal-600', 'hover:bg-teal-700');
+                    button.classList.add('bg-green-600');
+
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('bg-green-600');
+                        button.classList.add('bg-teal-600', 'hover:bg-teal-700');
+                    }, 2000);
+                }).catch(err => {
+                    alert('Erreur lors de la copie : ' + err);
+                });
+            }
+
+            function openPhoto(url) {
+                window.open(url, '_blank');
+            }
+        </script>
     </div>
-
-    <script>
-        // Fonction pour copier le token
-        function copyToken() {
-            const tokenText = document.getElementById('groupToken').textContent;
-
-            navigator.clipboard.writeText(tokenText).then(() => {
-                const button = document.querySelector('.btn-copy');
-                const originalText = button.textContent;
-
-                button.textContent = '✅ Copié !';
-                button.style.background = '#2ecc71';
-
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = '#f1c40f';
-                }, 2000);
-            }).catch(err => {
-                alert('Erreur lors de la copie : ' + err);
-            });
-        }
-
-        // Fonction pour ouvrir une photo en grand (vous pouvez améliorer avec une lightbox)
-        function openPhoto(url) {
-            window.open(url, '_blank');
-        }
-    </script>
 {% endblock %}

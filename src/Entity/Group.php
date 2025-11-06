@@ -36,13 +36,13 @@ class Group
     /**
      * @var Collection<int, UserGroup>
      */
-    #[ORM\OneToMany(targetEntity: UserGroup::class, mappedBy: 'group_id')]
+    #[ORM\OneToMany(targetEntity: UserGroup::class, mappedBy: 'group')]
     private Collection $userGroups;
 
     /**
      * @var Collection<int, Photo>
      */
-    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'group_id')]
+    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'group')]
     private Collection $photos;
 
     public function __construct()
