@@ -69,9 +69,6 @@ class GroupController extends AbstractController
         if (!$userGroup) {
             $this->addFlash('error', 'Vous n\'êtes pas membre de ce groupe.');
             return $this->redirectToRoute('app_main');
-        }elseif($userGroup->getRole() !== GroupRole::ADMIN->value){
-            $this->addFlash('error', 'Vous n\'êtes pas admin de ce groupe.');
-            return $this->redirectToRoute('app_main');
         }
 
         return $this->render('group/show.html.twig', [
