@@ -9,6 +9,7 @@ use App\Entity\UserGroup;
 use App\Form\GroupType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -76,6 +77,59 @@ class GroupController extends AbstractController
         return $this->render('group/show.html.twig', [
             'group' => $group,
             'userRole' => $userGroup->getRole(),
+        ]);
+    }
+
+    #[Route('/join/{id}', name: 'group_join', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function join(Request $request, Group $group, EntityManagerInterface $em, #[CurrentUser] User $user): Response
+    {
+
+        // verif si le user est dans le groupe
+        $userGroup = $em->getRepository(UserGroup::class)->findOneBy([
+            'group' => $group,
+            'user' => $user,
+        ]);
+
+        // redirect if already in group
+        if ($userGroup){
+            return $this->redirectToRoute('group_show', ['id' => $group->getId()]);
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('confirm', SubmitType::class, [
+                'label' => 'Oui',
+                'attr' => ['class' => 'flex-1'],
+            ])
+            ->add('cancel', SubmitType::class, [
+                'label' => 'Non',
+                'attr' => ['class' => 'flex-1'],
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('confirm')->isClicked()) {
+
+                $userGroup = new UserGroup();
+                $userGroup->setUser($user);
+                $userGroup->setGroup($group);
+                $userGroup->setRole(GroupRole::MEMBER->value);
+
+                $em->persist($userGroup);
+                $em->flush();
+
+                return $this->redirectToRoute('group_show', ['id' => $group->getId()]);
+            }
+
+            return $this->redirectToRoute('app_main');
+        }
+
+
+        return $this->render('group/join.html.twig', [
+            'group' => $group,
+            'confirmation_form' => $form->createView(),
         ]);
     }
 }

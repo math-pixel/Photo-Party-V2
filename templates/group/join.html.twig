@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Rejoindre le groupe{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div class="w-full max-w-md">
+            <!-- Card Container -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+
+                <!-- Question -->
+                <p class="text-lg text-gray-600 text-center">
+                    Voulez-vous rejoindre ce groupe ?
+                </p>
+
+                <!-- Group Name -->
+                <h1 class="text-3xl font-bold text-gray-900 mb-2 text-center mb-8">
+                    {{ group.name }}
+                </h1>
+
+                <!-- Buttons -->
+                {{ form_start(confirmation_form) }}
+                <div class="flex gap-4">
+
+                    {{ form_widget(confirmation_form.confirm) }}
+
+
+                    {{ form_widget(confirmation_form.cancel) }}
+
+
+                </div>
+
+                {{ form_end(confirmation_form) }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
