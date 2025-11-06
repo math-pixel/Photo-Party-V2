@@ -1,66 +1,70 @@
-{# templates/projection/index.html.twig #}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Projection en direct 📸</title>
-    <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
+{% extends "base.html.twig" %}
 
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 20px;
-            gap: 16px;
-        }
+{% block title %}Projection en direct{% endblock %}
 
-        .gallery img {
-            max-width: 300px;
-            max-height: 300px;
-            border: 2px solid #fff;
-            border-radius: 8px;
-            transition: transform 0.4s ease;
-        }
+{% block content %}
+    <div class="fixed inset-0 bg-black flex flex-col w-full h-full">
+        <!-- Simplified to full-screen black background with title and centered gallery -->
 
-        .gallery img:hover {
-            transform: scale(1.05);
-        }
+        <!-- Title -->
+        <div class="pt-8 px-6 text-center">
+            <h1 class="text-4xl font-bold text-white">Projection en direct</h1>
+        </div>
 
-        h1 {
-            padding: 20px;
-        }
-    </style>
-</head>
-<body>
-<h1>📸 Projection en direct</h1>
-<div class="gallery" id="gallery">
-    <!-- Images en temps réel -->
-</div>
+        <!-- Gallery Container -->
+        <div class="flex-1 flex items-center justify-center overflow-auto px-6 py-8">
+            <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl">
+                <!-- Images ajoutées en temps réel via JavaScript -->
+                <div class="text-center text-gray-500 col-span-full py-12">
+                    <p>En attente de photos...</p>
+                </div>
+            </div>
+        </div>
 
-<script>
-    const gallery = document.getElementById('gallery')
+        <!-- Logos en bas à droite -->
+        <!-- Added logos positioned at bottom-right, max 5% screen width -->
+        <div class="fixed bottom-4 right-4 flex flex-col items-end gap-2 bg-blue-100">
+            <!-- Logo 2 (au-dessus) -->
+            <img src="{{ asset(groupParameter.getUrlImage2|default("")) }}" alt="" class="max-w-[5vw] h-auto">
 
-    const eventSource = new EventSource('http://localhost:1337/.well-known/mercure?topic=https://example.com/photos/new')
+            <!-- Logo 1 (en bas) -->
+            <img src="{{ asset(groupParameter.getUrlImage1|default("")) }}" alt="" class="max-w-[5vw] h-auto">
+        </div>
+    </div>
 
-    eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data)
-        const img = document.createElement('img')
-        img.src = data.url
-        img.alt = 'Nouvelle photo'
-        gallery.prepend(img) // Affiche la photo en haut
-    }
+    <script>
+        const gallery = document.getElementById('gallery');
+        const emptyState = gallery.querySelector('.text-center');
 
-    eventSource.onerror = (error) => {
-        console.error("Erreur Mercure :", error)
-    }
-</script>
-</body>
-</html>
+        const eventSource = new EventSource('{{ mercure_url|default("http://localhost:1337/.well-known/mercure") }}?topic={{ mercure_topic|default("https://example.com/photos/new") }}');
+
+        eventSource.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+
+                // Supprimer le message "En attente de photos..." au premier message
+                if (emptyState && emptyState.parentElement === gallery) {
+                    emptyState.remove();
+                }
+
+                // Créer l'élément image
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'overflow-hidden rounded-lg shadow-lg';
+
+                const img = document.createElement('img');
+                img.src = data.url;
+                img.alt = data.alt || 'Nouvelle photo';
+                img.className = 'w-full h-64 object-cover';
+
+                imgContainer.appendChild(img);
+                gallery.prepend(imgContainer);
+            } catch (error) {
+                console.error('[v0] Erreur parsing Mercure:', error);
+            }
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('[v0] Erreur Mercure:', error);
+        };
+    </script>
+{% endblock %}
