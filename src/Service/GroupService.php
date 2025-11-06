@@ -28,6 +28,7 @@ class GroupService
             $groups = $groupRepository->createQueryBuilder('g')
                 ->where('g.id IN (:ids)')
                 ->setParameter('ids', $groupIds)
+                ->orderBy('g.created_at', 'DESC')
                 ->getQuery()
                 ->getResult();
         }
