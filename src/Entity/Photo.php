@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use App\Repository\PhotoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PhotoRepository::class)]
+#[Vich\Uploadable]
 class Photo
 {
     #[ORM\Id]
@@ -13,8 +16,11 @@ class Photo
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $media = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageName = null;
+
+    #[Vich\UploadableField(mapping: 'photos', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $commentary = null;
@@ -34,16 +40,25 @@ class Photo
         return $this->id;
     }
 
-    public function getMedia(): ?string
+    public function getImageName(): ?string
     {
-        return $this->media;
+        return $this->imageName;
     }
 
-    public function setMedia(string $media): static
+    public function setImageName(string $name): static
     {
-        $this->media = $media;
-
+        $this->imageName = $name;
         return $this;
+    }
+
+    public function getImageFile(): File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
     }
 
     public function getCommentary(): ?string
@@ -98,7 +113,7 @@ class Photo
     {
         return [
             'id' => $this->getId(),
-            'media' => $this->getMedia(),
+            'media' => $this->getImageName(),
             'commentary' => $this->getCommentary(),
             'is_allowed' => $this->getIsAllowed(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),

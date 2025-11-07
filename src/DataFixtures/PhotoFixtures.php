@@ -20,7 +20,7 @@ class PhotoFixtures extends Fixture implements DependentFixtureInterface
         // Par exemple : 5 groupes créés avec le code addReference("group_0" ... "group_4")
         for ($i = 0; $i < 20; $i++) {
             $photo = new Photo();
-            $photo->setMedia($faker->imageUrl(640, 480, 'nature', true)); // URL d'image fake
+            $photo->setImageName($faker->imageUrl(640, 480, 'nature', true)); // URL d'image fake
             $photo->setCommentary($faker->optional()->sentence(6));
             $photo->setIsAllowed($faker->boolean(80)); // 80% de chances que ce soit TRUE
             $photo->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-6 months', 'now')));
