@@ -26,14 +26,14 @@ class PhotoType extends AbstractType
                 'image_uri' => true,
                 'asset_helper' => true,
             ])
-            ->add('commentary', TextareaType::class, [
-                'label' => 'Commentaire',
-                'required' => false,
-                'attr' => [
-                    'rows' => 3,
-                    'placeholder' => 'Ajoutez un commentaire à votre photo...'
-                ]
-            ])
+//            ->add('commentary', TextareaType::class, [
+//                'label' => 'Commentaire',
+//                'required' => false,
+//                'attr' => [
+//                    'rows' => 3,
+//                    'placeholder' => 'Ajoutez un commentaire à votre photo...'
+//                ]
+//            ])
         ;
     }
 

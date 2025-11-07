@@ -5,8 +5,6 @@
 {% block body %}
     <div class="min-h-screen bg-gray-50 py-8">
         <div class="max-w-2xl mx-auto px-4">
-            <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Capturer ou télécharger une photo</h1>
-
             <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
 
                 <!-- Tabs pour webcam/upload -->
@@ -21,63 +19,73 @@
 
                 {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 
-                    <div class="hidden">
-                        {{ form_widget(form.imageFile) }}
+                <div class="hidden">
+                    {{ form_widget(form.imageFile) }}
+                </div>
+
+
+                <!-- Webcam Tab -->
+                <div id="webcam-content" class="space-y-4">
+                    <video id="webcam" class="w-full bg-black rounded-lg mb-4" autoplay playsinline></video>
+
+                    <div id="webcam-preview" class="hidden">
+                        <img id="captured-image" src="/placeholder.svg" alt="Photo capturée" class="w-full rounded-lg mb-4 border border-gray-200">
                     </div>
 
+                    <canvas id="canvas" class="hidden"></canvas>
 
-                    <!-- Webcam Tab -->
-                    <div id="webcam-content" class="space-y-4">
-                        <video id="webcam" class="w-full bg-black rounded-lg mb-4" autoplay playsinline></video>
-
-                        <div id="webcam-preview" class="hidden">
-                            <img id="captured-image" src="/placeholder.svg" alt="Photo capturée" class="w-full rounded-lg mb-4 border border-gray-200">
-                        </div>
-
-                        <canvas id="canvas" class="hidden"></canvas>
-
-                        <!-- Added hidden wrapper for webcam and capture button -->
-                        <div id="webcam-controls" class="flex gap-4">
+                    <!-- Added hidden wrapper for webcam and capture button -->
+                    <div id="webcam-controls" class="flex gap-4">
 
 
-                            <button type="button" onclick="startWebcam()" id="start-webcam-btn" class="flex-1 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition">
-                                Démarrer webcam
-                            </button>
-                            <button type="button" onclick="capturePhoto()" id="capture-btn" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg transition hidden">
-                                Capturer
-                            </button>
-                        </div>
+                        <button type="button" onclick="startWebcam()" id="start-webcam-btn" class="flex-1 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition">
+                            Démarrer webcam
+                        </button>
+                        <button type="button" onclick="capturePhoto()" id="capture-btn" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg transition hidden">
+                            Capturer
+                        </button>
                     </div>
+                </div>
 
-                    <!-- Upload Tab -->
-                    <div id="upload-content" class="hidden space-y-4">
-                        <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(event)" class="w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer">
+                <!-- Upload Tab -->
+                <div id="upload-content" class="hidden space-y-4">
+                    <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(event)" class="w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer">
 
-                        <div id="upload-preview" class="hidden">
-                            <img id="uploaded-image" src="/placeholder.svg" alt="Photo téléchargée" class="w-full rounded-lg mb-4 border border-gray-200">
-                        </div>
+                    <div id="upload-preview" class="hidden">
+                        <img id="uploaded-image" src="/placeholder.svg" alt="Photo téléchargée" class="w-full rounded-lg mb-4 border border-gray-200">
                     </div>
+                </div>
 
-                    <!-- Preview et Actions -->
-                    <div id="preview-section" class="hidden mt-6 pt-6 border-t border-gray-200">
-                        <p class="text-gray-700 font-semibold mb-4">Photo sélectionnée</p>
+                <!-- Preview et Actions -->
+                <div id="preview-section" class="hidden mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-gray-700 font-semibold mb-4">Photo sélectionnée</p>
 
-                        <div class="flex gap-3">
-                            <button type="button" onclick="cancelPhoto()" class="flex-1 px-4 py-3 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded-lg transition">
-                                ❌ Annuler
-                            </button>
-                            <button type="submit" id="send-btn" class="flex-1 px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition">
-                                ✅ Envoyer
-                            </button>
-                        </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="cancelPhoto()" class="flex-1 px-4 py-3 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold rounded-lg transition">
+                            ❌ Annuler
+                        </button>
+                        <button type="submit" id="send-btn" class="flex-1 px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition">
+                            ✅ Envoyer
+                        </button>
                     </div>
+                </div>
                 {{ form_end(form) }}
+
+                <div class="pt-8">
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
 
                 <!-- Status Feedback -->
                 <div id="status-message" class="hidden mt-6 p-4 rounded-lg text-center font-semibold">
                 </div>
 
             </div>
+
+            <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Capturer ou télécharger une photo</h1>
 
         </div>
     </div>
