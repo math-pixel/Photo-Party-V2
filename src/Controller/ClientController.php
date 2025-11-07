@@ -3,20 +3,44 @@
 namespace App\Controller;
 
 use App\Entity\Group;
+use App\Entity\Photo;
+use App\Form\PhotoType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ClientController extends AbstractController
 {
     #[Route('/party/{id}', name: 'app_client', requirements: ['id' => '\d+'])]
-    public function index(Group $group): Response
+    public function index(Group $group, Request $request, EntityManagerInterface $em): Response
     {
 
+        $photo = new Photo();
+        $photo->setGroup($group);
+
+        $form = $this->createForm(PhotoType::class, $photo);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // todo si pas de photo ne pas ajouter une row
+
+            $em->persist($photo);
+            $em->flush();
+
+            $this->addFlash('success', 'Photo ajoutée avec succès !');
+
+            return $this->redirectToRoute('app_client', [
+                'id' => $group->getId()
+            ]);
+        }
 
 
         return $this->render('client/index.html.twig', [
             'controller_name' => 'ClientController',
+            'form' => $form->createView(),
         ]);
     }
 }

@@ -35,6 +35,13 @@ class Photo
     #[ORM\JoinColumn(nullable: false)]
     private ?Group $group = null;
 
+    public function __construct()
+    {
+        $this->is_allowed = true;
+        $this->created_at = new \DateTimeImmutable();
+
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,7 +58,7 @@ class Photo
         return $this;
     }
 
-    public function getImageFile(): File
+    public function getImageFile(): ?File
     {
         return $this->imageFile;
     }
