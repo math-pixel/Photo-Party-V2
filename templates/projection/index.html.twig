@@ -33,38 +33,47 @@
     </div>
 
     <script>
-        const gallery = document.getElementById('gallery');
-        const emptyState = gallery.querySelector('.text-center');
+        {#const gallery = document.getElementById('gallery');#}
+        {#const emptyState = gallery.querySelector('.text-center');#}
 
-        const eventSource = new EventSource('{{ mercure_url|default("http://localhost:1337/.well-known/mercure") }}?topic={{ mercure_topic|default("https://example.com/photos/new") }}');
+        {#const eventSource = new EventSource('{{ mercure_url|default("http://localhost:1337/.well-known/mercure") }}?topic={{ mercure_topic|default("https://example.com/photos/new") }}');#}
 
-        eventSource.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
+        {#eventSource.onmessage = (event) => {#}
+        {#    try {#}
+        {#        const data = JSON.parse(event.data);#}
 
-                // Supprimer le message "En attente de photos..." au premier message
-                if (emptyState && emptyState.parentElement === gallery) {
-                    emptyState.remove();
-                }
+        {#        // Supprimer le message "En attente de photos..." au premier message#}
+        {#        if (emptyState && emptyState.parentElement === gallery) {#}
+        {#            emptyState.remove();#}
+        {#        }#}
 
-                // Créer l'élément image
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'overflow-hidden rounded-lg shadow-lg';
+        {#        // Créer l'élément image#}
+        {#        const imgContainer = document.createElement('div');#}
+        {#        imgContainer.className = 'overflow-hidden rounded-lg shadow-lg';#}
 
-                const img = document.createElement('img');
-                img.src = data.url;
-                img.alt = data.alt || 'Nouvelle photo';
-                img.className = 'w-full h-64 object-cover';
+        {#        const img = document.createElement('img');#}
+        {#        img.src = data.url;#}
+        {#        img.alt = data.alt || 'Nouvelle photo';#}
+        {#        img.className = 'w-full h-64 object-cover';#}
 
-                imgContainer.appendChild(img);
-                gallery.prepend(imgContainer);
-            } catch (error) {
-                console.error('[v0] Erreur parsing Mercure:', error);
-            }
-        };
+        {#        imgContainer.appendChild(img);#}
+        {#        gallery.prepend(imgContainer);#}
+        {#    } catch (error) {#}
+        {#        console.error('[v0] Erreur parsing Mercure:', error);#}
+        {#    }#}
+        {#};#}
 
-        eventSource.onerror = (error) => {
-            console.error('[v0] Erreur Mercure:', error);
-        };
+        {#eventSource.onerror = (error) => {#}
+        {#    console.error('[v0] Erreur Mercure:', error);#}
+        {#};#}
+
+
+        // loop logic
+        var photosRawData = {{ photos|json_encode()|raw }};
+        var photos = JSON.parse(photosRawData)
+        console.log("photos : ", photos)
+        console.log(photos[0].id)
+
+
     </script>
 {% endblock %}

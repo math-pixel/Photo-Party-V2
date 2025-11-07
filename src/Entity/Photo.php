@@ -58,7 +58,7 @@ class Photo
         return $this;
     }
 
-    public function isAllowed(): ?bool
+    public function getisAllowed(): ?bool
     {
         return $this->is_allowed;
     }
@@ -92,5 +92,16 @@ class Photo
         $this->group = $group;
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'media' => $this->getMedia(),
+            'commentary' => $this->getCommentary(),
+            'is_allowed' => $this->getIsAllowed(),
+            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+        ];
     }
 }

@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function Webmozart\Assert\Tests\StaticAnalysis\length;
 
 class ProjectionController extends AbstractController
 {
@@ -18,14 +19,17 @@ class ProjectionController extends AbstractController
     {
 
         $groupId = $group->getId();
+        $photos = $em->getRepository(Photo::class)->findBy(['group' => $group]);
 
-        $photos = $em->getRepository(Photo::class)->find([
-            'id' => $groupId,
-        ]);
+        $photos = array_map(function ($photo) {
+            return $photo->toArray();
+        }, $photos);
+
+        $encodedPhotos = json_encode($photos);
 
         return $this->render('projection/index.html.twig', [
             'groupParameter' => $group,
-            'photos' => $photos,
+            'photos' => $encodedPhotos,
         ]);
     }
 }
