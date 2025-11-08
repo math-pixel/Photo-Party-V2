@@ -31,8 +31,11 @@ class GroupService
                 ->orderBy('g.created_at', 'DESC')
                 ->getQuery()
                 ->getResult();
+
+            return $groups;
         }
 
-        return $groups;
+        return null;
+
     }
 }
