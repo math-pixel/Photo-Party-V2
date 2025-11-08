@@ -74,6 +74,51 @@
         console.log("photos : ", photos)
         console.log(photos[0].id)
 
+        const mercureUrl = '{{ mercure_url }}';
+
+        function connectMercure() {
+            // Construire l'URL avec les topics
+            const url = new URL(mercureUrl);
+
+            // S'abonner à plusieurs topics
+            url.searchParams.append('topic', `https://example.com/photos/new`);
+
+            console.log('🔌 Connexion à:', url.toString());
+
+            // Créer l'EventSource
+            eventSource = new EventSource(url.toString());
+
+            // ⭐ Événement : Connexion établie
+            eventSource.addEventListener('open', (e) => {
+                console.log('✅ Connecté à Mercure');
+            });
+
+            // ⭐ Événement : Message reçu
+            eventSource.addEventListener('message', (event) => {
+                console.log('📨 Message Mercure reçu:', event.data);
+
+                // try {
+                //     const data = JSON.parse(event.data);
+                //     handleMercureEvent(data);
+                // } catch (e) {
+                //     console.error('❌ Erreur parsing JSON:', e);
+                // }
+            });
+
+            // ⭐ Événement : Erreur
+            eventSource.addEventListener('error', (e) => {
+                console.error('❌ Erreur Mercure:', e);
+
+                // Reconnecter après 5 secondes
+                // setTimeout(() => {
+                //     console.log('🔄 Tentative de reconnexion...');
+                //     if (eventSource) {
+                //         eventSource.close();
+                //     }
+                //     connectMercure();
+                // }, 5000);
+            });
+        }
 
     </script>
 {% endblock %}

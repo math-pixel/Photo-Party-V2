@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\Photo;
 use App\Form\PhotoType;
+use App\Service\PhotoPublisher;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ClientController extends AbstractController
 {
     #[Route('/party/{id}', name: 'app_client', requirements: ['id' => '\d+'])]
-    public function index(Group $group, Request $request, EntityManagerInterface $em): Response
+    public function index(
+        Group $group, Request $request, EntityManagerInterface $em,
+        PhotoPublisher $photoPublisher): Response
     {
 
         $photo = new Photo();
@@ -29,6 +32,8 @@ final class ClientController extends AbstractController
 
             $em->persist($photo);
             $em->flush();
+
+            $photoPublisher->publish("toto mercured", 0);
 
             $this->addFlash('success', 'Photo ajoutée avec succès !');
 
