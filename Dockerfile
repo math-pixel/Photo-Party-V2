@@ -1,6 +1,5 @@
-# Dockerfile
-
-FROM php:8.3-cli
+# Dockerfile (version complète)
+FROM dunglas/frankenphp:latest-php8.3
 
 # Installer les dépendances système
 RUN apt-get update && apt-get install -y \
@@ -10,19 +9,18 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     sqlite3 \
     libsqlite3-dev \
-    curl \
-    libmagickwand-dev --no-install-recommends
+    libmagickwand-dev --no-install-recommends \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Installer les extensions PHP nécessaires
-RUN docker-php-ext-install \
+# Installer les extensions PHP
+RUN install-php-extensions \
     pdo \
     pdo_sqlite \
     intl \
     zip \
-    fileinfo
-
-# Activer l'extension fileinfo (pour VichUploader)
-RUN docker-php-ext-enable fileinfo
+    opcache \
+    apcu
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,14 +28,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Définir le répertoire de travail
 WORKDIR /app
 
+# ⭐ Copier le Caddyfile personnalisé
+COPY Caddyfile /etc/caddy/Caddyfile
+
 # Copier les fichiers du projet
 COPY . /app
 
-# Donner les permissions sur le dossier var
+# Permissions
 RUN chmod -R 777 /app/var
 
-# Exposer le port 8000
-EXPOSE 8000
+# Exposer les ports
+EXPOSE 80 443
+
+# Variables d'environnement
+ENV SERVER_NAME=":80"
 
 # Commande par défaut
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

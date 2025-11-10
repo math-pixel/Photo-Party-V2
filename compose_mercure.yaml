@@ -1,64 +1,45 @@
 # docker-compose.yml
-
-version: '3.8'
-
 services:
-    # ========== SERVICE PHP/SYMFONY ==========
-    php:
+    # ========== SERVICE FRANKENPHP (tout-en-un) ==========
+    app:
         build:
             context: .
             dockerfile: Dockerfile
-        container_name: symfony_php
+        container_name: symfony_frankenphp
         working_dir: /app
         volumes:
             # Monter tout le projet
             - ./:/app
-            # ⭐ Important : donner les droits en écriture sur var/
+            # Donner les droits en écriture sur var/
             - ./var:/app/var:rw
+            # ⭐ Volumes pour Caddy/Mercure
+            - caddy_data:/data
+            - caddy_config:/config
         ports:
-            - "8000:8000"
+            - "8000:80"      # HTTP
+            - "8443:443"     # HTTPS (si besoin plus tard)
         environment:
-            # ⭐ Correction : chemin absolu pour SQLite dans Docker
+            # ⭐ Configuration serveur
+            SERVER_NAME: ":80"
+
+            # ⭐ Base de données SQLite
             DATABASE_URL: "sqlite:////app/var/data.db"
             APP_ENV: dev
-            # ⭐ URL Mercure (communication interne Docker)
-            MERCURE_URL: "http://mercure/.well-known/mercure"
-            # ⭐ URL publique Mercure (pour le navigateur)
-            MERCURE_PUBLIC_URL: "http://localhost:1337/.well-known/mercure"
-            MERCURE_JWT_SECRET: "!ChangeThisMercureHubJWTSecretKey!"
-        networks:
-            - app-network
-        depends_on:
-            - mercure
 
-    # ========== SERVICE MERCURE ==========
-    mercure:
-        image: dunglas/mercure
-        container_name: symfony_mercure
-        restart: unless-stopped
-        ports:
-            - "1337:80"
-        environment:
-            # ⭐ IMPORTANT : Désactiver HTTPS en dev
-            SERVER_NAME: ':80'
-            MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
-            MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
-            # ⭐ CORS : Autoriser Symfony
-            MERCURE_EXTRA_DIRECTIVES: |
-                cors_origins http://localhost:8000 http://127.0.0.1:8000
-                anonymous
-        # ⭐ Utiliser le Caddyfile de production (mais en HTTP grâce à SERVER_NAME)
-        command: /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
-        volumes:
-            - mercure_data:/data
-            - mercure_config:/config
+            # ⭐ Configuration Mercure (intégré)
+            MERCURE_PUBLISHER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
+            MERCURE_SUBSCRIBER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
+
+            # ⭐ URLs Mercure (même container maintenant !)
+            MERCURE_URL: "http://localhost/.well-known/mercure"
+            MERCURE_PUBLIC_URL: "http://localhost:8000/.well-known/mercure"
         networks:
             - app-network
 
 # ========== VOLUMES ==========
 volumes:
-    mercure_data:
-    mercure_config:
+    caddy_data:
+    caddy_config:
 
 # ========== NETWORK ==========
 networks:

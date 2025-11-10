@@ -1,0 +1,44 @@
+# Caddyfile
+
+{
+    # Configuration globale
+    auto_https off
+    admin off
+
+    # ⭐ Activer Mercure
+    order mercure after encode
+    order php_server before file_server
+}
+
+:80 {
+    # Racine du projet Symfony
+    root * /app/public
+
+    # ⭐ Route Mercure
+    mercure {
+        # Clés JWT (doivent correspondre à celles du docker-compose.yml)
+        publisher_jwt !ChangeThisMercureHubJWTSecretKey!
+        subscriber_jwt !ChangeThisMercureHubJWTSecretKey!
+
+        # Autoriser les publications anonymes en dev (optionnel)
+        anonymous
+
+        # CORS
+        cors_origins http://localhost:8000 http://127.0.0.1:8000
+    }
+
+    # ⭐ Gestion PHP
+    php_server {
+        # Mode worker pour les performances
+        # env FRANKENPHP_CONFIG="worker ./public/index.php"
+    }
+
+    # Encodage
+    encode zstd gzip
+
+    # Logs
+    log {
+        output stdout
+        format console
+    }
+}
