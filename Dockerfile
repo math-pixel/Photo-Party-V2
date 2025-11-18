@@ -1,47 +1,34 @@
-# Dockerfile (version complète)
 FROM dunglas/frankenphp:latest-php8.3
 
-# Installer les dépendances système
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    libicu-dev \
-    sqlite3 \
-    libsqlite3-dev \
-    libmagickwand-dev --no-install-recommends \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Installer les extensions PHP
+# Installer les extensions PHP nécessaires pour Symfony
 RUN install-php-extensions \
-    pdo \
+    pdo_mysql \
+    pdo_pgsql \
     pdo_sqlite \
     intl \
     zip \
     opcache \
-    apcu
+    apcu \
+    gd
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
 WORKDIR /app
 
-# ⭐ Copier le Caddyfile personnalisé
-COPY Caddyfile /etc/caddy/Caddyfile
+# Copier les fichiers de dépendances
+COPY composer.json composer.lock ./
 
-# Copier les fichiers du projet
-COPY . /app
+# Installer les dépendances
+RUN composer install --no-scripts --no-autoloader --prefer-dist
+
+# Copier le reste de l'application
+COPY . .
+
+# Générer l'autoloader optimisé
+RUN composer dump-autoload --optimize
 
 # Permissions
-RUN chmod -R 777 /app/var
+RUN chown -R www-data:www-data /app/var
 
-# Exposer les ports
-EXPOSE 80 443
-
-# Variables d'environnement
-ENV SERVER_NAME=":80"
-
-# Commande par défaut
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

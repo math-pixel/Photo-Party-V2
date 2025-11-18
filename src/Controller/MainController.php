@@ -30,7 +30,7 @@ final class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/home', name: 'app_main')]
+    #[Route('/home', name: 'app_home')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function home(EntityManagerInterface $entityManager): Response
     {
