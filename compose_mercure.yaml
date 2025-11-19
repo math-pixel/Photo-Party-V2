@@ -13,6 +13,8 @@ services:
             APP_ENV: dev
             APP_SECRET: changeme
             DATABASE_URL: "sqlite:///%kernel.project_dir%/var/data.db"
+            MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY}
+            MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY}
 #        restart: unless-stopped
 
     # Si vous utilisez MySQL/PostgreSQL :

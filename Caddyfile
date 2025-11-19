@@ -1,10 +1,30 @@
 {
     frankenphp
+    order mercure after encode
     order php_server before file_server
 }
 
 :80 {
     root * /app/public
     encode gzip
+
+    # Activer Mercure
+    mercure {
+        # Clé pour publier (JWT secret)
+        publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY}
+        # Clé pour s'abonner (JWT secret)
+        subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY}
+        # Autoriser les requêtes anonymes
+        anonymous
+#        cors_origins http://localhost:2018
+        transport_url bolt:///app/var/mercure.db
+    }
+
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+
     php_server
 }
