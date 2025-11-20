@@ -10,7 +10,7 @@ class PhotoPublisher
 {
     public function __construct(private readonly HubInterface $hub) {}
 
-    public function publish(string $photoUrl, int $id): void
+    public function publish(string $topic, string $photoUrl, int $id): void
     {
         $data = [
             'id' => $id,
@@ -18,7 +18,7 @@ class PhotoPublisher
         ];
 
         $update = new Update(
-            topics: ['https://example.com/photos/new'],
+            topics: $topic,
             data: json_encode($data)
         );
 

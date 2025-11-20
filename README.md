@@ -60,3 +60,16 @@ erDiagram
     user-groups ||--o{ groups : "many to many"
 ````
 
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
+php bin/console tailwind:build
+
+
+tips :
+tailwind :
+- download v3.4.18 of tailwind : https://github.com/tailwindlabs/tailwindcss/releases
+- replace existing file in /var/tailwind/{version}/tailwindcss-windows-x64.exe by the DL file
+- exec : php bin/console tailwind:build
+
+
