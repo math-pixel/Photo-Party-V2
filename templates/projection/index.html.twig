@@ -33,92 +33,132 @@
     </div>
 
     <script>
-        {#const gallery = document.getElementById('gallery');#}
-        {#const emptyState = gallery.querySelector('.text-center');#}
+        const galleryDOM = document.getElementById('gallery');
+        const emptyState = galleryDOM.querySelector('.text-center');
 
-        {#const eventSource = new EventSource('{{ mercure_url|default("http://localhost:1337/.well-known/mercure") }}?topic={{ mercure_topic|default("https://example.com/photos/new") }}');#}
+        // Configuration
+        const mercureUrl = '{{ mercure_url|default("http://localhost:1337/.well-known/mercure") }}';
+        const mercureTopic = '{{ mercure_topic|default("https://example.com/photos/new") }}';
+        const default_path_image = '{{ default_path_image }}'
 
-        {#eventSource.onmessage = (event) => {#}
-        {#    try {#}
-        {#        const data = JSON.parse(event.data);#}
+        let eventSource = null;
+        let pathImages = []
 
-        {#        // Supprimer le message "En attente de photos..." au premier message#}
-        {#        if (emptyState && emptyState.parentElement === gallery) {#}
-        {#            emptyState.remove();#}
-        {#        }#}
-
-        {#        // Créer l'élément image#}
-        {#        const imgContainer = document.createElement('div');#}
-        {#        imgContainer.className = 'overflow-hidden rounded-lg shadow-lg';#}
-
-        {#        const img = document.createElement('img');#}
-        {#        img.src = data.url;#}
-        {#        img.alt = data.alt || 'Nouvelle photo';#}
-        {#        img.className = 'w-full h-64 object-cover';#}
-
-        {#        imgContainer.appendChild(img);#}
-        {#        gallery.prepend(imgContainer);#}
-        {#    } catch (error) {#}
-        {#        console.error('[v0] Erreur parsing Mercure:', error);#}
-        {#    }#}
-        {#};#}
-
-        {#eventSource.onerror = (error) => {#}
-        {#    console.error('[v0] Erreur Mercure:', error);#}
-        {#};#}
-
-
-        // loop logic
-        var photosRawData = {{ photos|json_encode()|raw }};
-        var photos = JSON.parse(photosRawData)
-        console.log("photos : ", photos)
-        console.log(photos[0].id)
-
-        const mercureUrl = '{{ mercure_url }}';
-
+        // 🔌 Fonction de connexion à Mercure
         function connectMercure() {
-            // Construire l'URL avec les topics
+            // Construire l'URL avec le topic
             const url = new URL(mercureUrl);
+            url.searchParams.append('topic', mercureTopic);
 
-            // S'abonner à plusieurs topics
-            url.searchParams.append('topic', `https://example.com/photos/new`);
-
-            console.log('🔌 Connexion à:', url.toString());
+            console.log('🔌 Connexion à Mercure:', url.toString());
 
             // Créer l'EventSource
             eventSource = new EventSource(url.toString());
 
-            // ⭐ Événement : Connexion établie
-            eventSource.addEventListener('open', (e) => {
+            // ✅ Connexion établie
+            eventSource.addEventListener('open', () => {
                 console.log('✅ Connecté à Mercure');
             });
 
-            // ⭐ Événement : Message reçu
+            // 📨 Message reçu
             eventSource.addEventListener('message', (event) => {
-                console.log('📨 Message Mercure reçu:', event.data);
+                console.log('📨 Message reçu:', event.data);
 
-                // try {
-                //     const data = JSON.parse(event.data);
-                //     handleMercureEvent(data);
-                // } catch (e) {
-                //     console.error('❌ Erreur parsing JSON:', e);
-                // }
+                try {
+                    const data = JSON.parse(event.data);
+                    addPhotoToGallery(data);
+                } catch (error) {
+                    console.error('❌ Erreur parsing JSON:', error);
+                }
             });
 
-            // ⭐ Événement : Erreur
-            eventSource.addEventListener('error', (e) => {
-                console.error('❌ Erreur Mercure:', e);
+            // ❌ Erreur de connexion
+            eventSource.addEventListener('error', (error) => {
+                console.error('❌ Erreur Mercure:', error);
+
+                // Fermer la connexion actuelle
+                if (eventSource) {
+                    eventSource.close();
+                    eventSource = null;
+                }
 
                 // Reconnecter après 5 secondes
-                // setTimeout(() => {
-                //     console.log('🔄 Tentative de reconnexion...');
-                //     if (eventSource) {
-                //         eventSource.close();
-                //     }
-                //     connectMercure();
-                // }, 5000);
+                console.log('🔄 Reconnexion dans 5s...');
+                setTimeout(connectMercure, 5000);
             });
         }
 
+        // 🖼️ Ajouter une photo à la galerie
+        function addPhotoToGallery(data) {
+
+            let path = "http://127.0.0.1:8000/" + default_path_image + data.url;
+            pathImages.push(path);
+            console.log(pathImages)
+
+        }
+
+        function displayImage(path){
+
+            // Supprimer le message "En attente de photos..." si présent
+            if (emptyState && emptyState.parentElement === galleryDOM) {
+                emptyState.remove();
+            }
+
+            // Créer l'élément image
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'overflow-hidden rounded-lg shadow-lg';
+
+            const img = document.createElement('img');
+            img.src =  path;
+            img.alt = 'Nouvelle photo';
+            img.className = 'w-full h-64 object-cover';
+
+            imgContainer.appendChild(img);
+
+            galleryDOM.innerHTML = '';
+            galleryDOM.appendChild(imgContainer);
+        }
+
+        // 🧹 Nettoyer la connexion quand on quitte la page
+        window.addEventListener('beforeunload', () => {
+            if (eventSource) {
+                console.log('🔌 Fermeture de la connexion Mercure');
+                eventSource.close();
+            }
+        });
+
+        // 📊 Debug : Afficher les photos initiales (si besoin)
+        {% if photos is defined %}
+            // Get existing photo
+            var photosRawData = {{ photos|json_encode()|raw }};
+            var photos = JSON.parse(photosRawData)
+            console.log("photos : ", photos)
+            console.log(photos[0].id)
+            photos.forEach( (photoUrl) =>
+                addPhotoToGallery({url: photoUrl})
+            )
+        {% endif %}
+
+        function loopImage(){
+            let i = 0
+            setInterval(() => {
+                if (pathImages[i] != null ){
+                    console.log(pathImages[i])
+                    displayImage(pathImages[i])
+                }
+
+                i+=1
+                if (i >= pathImages.length){
+                    i = 0
+                }
+            }, 1000)
+        }
+
+
+        // 🚀 Lancer la connexion au chargement
+        connectMercure();
+
+        // start loop
+        loopImage()
     </script>
 {% endblock %}

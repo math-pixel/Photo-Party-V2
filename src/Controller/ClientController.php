@@ -33,7 +33,7 @@ final class ClientController extends AbstractController
             $em->persist($photo);
             $em->flush();
 
-            $photoPublisher->publish("toto mercured", 0);
+//            $photoPublisher->publish($group->getId(), $photo->getImageName() , 0);
 
             $this->addFlash('success', 'Photo ajoutée avec succès !');
 

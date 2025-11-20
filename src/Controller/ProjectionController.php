@@ -22,14 +22,17 @@ class ProjectionController extends AbstractController
         $photos = $em->getRepository(Photo::class)->findBy(['group' => $group]);
 
         $photos = array_map(function ($photo) {
-            return $photo->toArray();
+            return $photo->getImageName();
         }, $photos);
+
+        print_r($photos);
 
         $encodedPhotos = json_encode($photos);
 
         return $this->render('projection/index.html.twig', [
             'groupParameter' => $group,
             'photos' => $encodedPhotos,
+            'mercure_topic' => "$groupId",
         ]);
     }
 }

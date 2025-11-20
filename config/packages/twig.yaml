@@ -3,6 +3,7 @@ twig:
 
     globals:
         mercure_url: '%env(MERCURE_PUBLIC_URL)%'
+        default_path_image: '%env(DEFAULT_PATH_IMAGE)%'
 
 when@test:
     twig:
