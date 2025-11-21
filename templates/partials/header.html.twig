@@ -1,19 +1,59 @@
-<header class="bg-white shadow-sm border-b border-gray-200 z-50">
-    <div class="mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            <!-- Email à gauche -->
-            <div class="flex-1">
-                <span class="text-sm font-medium text-gray-700">
-                    {{ app.user.email }}
-                </span>
+<header class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-50 font-sans">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+
+            {# --- 1. LOGO --- #}
+            <div class="flex-shrink-0 flex items-center">
+                <a href="/" class="text-2xl font-display font-bold text-slate-900 tracking-tight hover:opacity-80 transition-opacity">
+                    Photo<span class="text-party-purple">Party</span>
+                    <span class="text-party-yellow">.</span>
+                </a>
             </div>
 
-            <!-- Logout à droite -->
-            <div class="flex-1 flex justify-end text-white">
-                <a href="{{ path('app_logout') }}"
-                   class="btn px-4 py-2 text-sm font-medium bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors duration-200 text-white">
-                    Logout
-                </a>
+            {# --- 2. ZONE DROITE --- #}
+            <div class="flex items-center gap-6">
+                {% if app.user %}
+
+                    {# A. Lien Profil (Avatar + Email) #}
+                    <a href="{{ path('app_account') }}" class="group flex items-center gap-3 transition-colors">
+                        {# Avatar Squircle #}
+                        <div class="h-10 w-10 bg-gradient-to-br from-party-blue to-party-purple rounded-[14px] flex items-center justify-center text-white font-bold text-sm shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-200">
+                            {{ app.user.email|first|upper }}
+                        </div>
+
+                        {# Infos Texte #}
+                        <div class="hidden sm:flex flex-col">
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider leading-none mb-1">Mon compte</span>
+                            <span class="text-sm font-bold text-slate-700 group-hover:text-party-blue transition-colors">
+                                {{ app.user.email }}
+                            </span>
+                        </div>
+                    </a>
+
+                    {# Séparateur vertical #}
+                    <div class="h-8 w-px bg-slate-200"></div>
+
+                    {# B. Bouton Logout (Icône seule) #}
+                    {# w-10 h-10 pour faire un carré parfait #}
+                    <a href="{{ path('app_logout') }}"
+                       class="flex btn p-0 items-center justify-center w-11 h-11 rounded-[14px] border border-slate-200 bg-white text-slate-400 hover:text-party-pink hover:bg-party-pink/5 hover:border-party-pink/30 transition-all duration-200 shadow-sm"
+                       title="Se déconnecter">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                    </a>
+
+                {% else %}
+                    {# Non connecté #}
+                    <div class="flex items-center gap-4">
+                        <a href="{{ path('app_login') }}" class="text-slate-600 font-bold hover:text-slate-900 text-sm">
+                            Connexion
+                        </a>
+                        <a href="{{ path('app_register') }}" class="px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-[14px] hover:bg-slate-800 transition-transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl">
+                            S'inscrire
+                        </a>
+                    </div>
+                {% endif %}
             </div>
 
         </div>
