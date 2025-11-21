@@ -4,292 +4,109 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Variables CSS pour le thème */
+/* --- 1. VARIABLES --- */
 :root {
-    /* Colors */
-    --color-background: #ffffff;
-    --color-foreground: #1f2937;
-    --color-border: #e5e7eb;
-    --color-muted: #6b7280;
+    --color-yellow: #FFBE0B;
+    --color-orange: #FB5607;
+    --color-pink:   #FF006E;
+    --color-purple: #8338EC;
+    --color-blue:   #3A86FF;
 
-    --color-primary: #14b8a6; /* teal-600 */
-    --color-primary-hover: #0d9488; /* teal-700 */
-    --color-primary-light: #f0fdfa; /* teal-50 */
-
-    --color-accent: #0891b2; /* cyan-600 */
-
-    --color-error: #dc2626; /* red-600 */
-    --color-error-light: #fee2e2; /* red-50 */
-
-    --color-success: #16a34a; /* green-600 */
-    --color-success-light: #f0fdf4; /* green-50 */
-
-    --color-warning: #ea580c; /* orange-600 */
-    --color-warning-light: #fff7ed; /* orange-50 */
-
-    /* Spacing & Border Radius */
-    --radius: 0.5rem; /* 8px */
-    --radius-sm: 0.25rem; /* 4px */
-    --radius-md: 0.375rem; /* 6px */
-    --radius-lg: 0.75rem; /* 12px */
-    --radius-xl: 1rem; /* 16px */
-    --radius-full: 9999px;
-
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-
-    /* Fonts */
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-mono: 'Fira Code', monospace;
+    --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+    --font-display: 'Fredoka', sans-serif;
 }
 
-/* Dark mode */
-.dark {
-    --color-background: #111827;
-    --color-foreground: #f9fafb;
-    --color-border: #374151;
-    --color-muted: #9ca3af;
-}
-
-/* Base styles */
 @layer base {
-    * {
-        @apply border-gray-200;
-    }
-
     body {
-        @apply bg-gray-50 text-gray-900 antialiased;
-        font-family: var(--font-sans);
+        @apply bg-slate-50 text-slate-900 antialiased font-sans;
     }
-
-    .dark body {
-        @apply bg-gray-900 text-gray-50;
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-display font-bold;
     }
 }
 
-/* Component layer - Vos composants personnalisés */
 @layer components {
 
-    /* Buttons */
+    /* --- BUTTONS GLOBAL --- */
     .btn {
-        @apply font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out inline-flex items-center justify-center;
+        /* On ajoute 'relative' et 'z-10' pour que le texte reste au dessus du dégradé */
+        @apply relative z-10 font-bold py-3 px-6 rounded-xl transition-all duration-300 ease-in-out inline-flex items-center justify-center transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed;
     }
 
+    /* --- LE fameux BOUTON PRIMARY --- */
     .btn-primary {
-        @apply bg-teal-600 hover:bg-teal-700 text-white shadow-sm;
+        /* 1. Le fond de base est NOIR (visible au survol) */
+        @apply bg-party-blue text-white overflow-hidden border-0 shadow-lg shadow-party-purple/30;
     }
 
+    /* 2. Le Dégradé est un calque par-dessus (visible par défaut) */
+    .btn-primary::before {
+        content: '';
+        @apply absolute inset-0 bg-gradient-to-r from-party-purple to-party-blue transition-opacity duration-300 ease-in-out;
+        z-index: -1; /* Derrière le texte */
+        opacity: 1;  /* Visible à 100% au début */
+    }
+
+    /* 3. Au survol, on cache le dégradé pour révéler le noir */
+    .btn-primary:hover::before {
+        opacity: 0;
+    }
+
+    /* --- AUTRES BOUTONS --- */
     .btn-secondary {
-        @apply bg-gray-200 hover:bg-gray-300 text-gray-900;
+        @apply bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-party-purple;
     }
 
     .btn-danger {
-        @apply bg-red-600 hover:bg-red-700 text-white;
+        @apply bg-white text-red-600 border border-red-100 hover:bg-red-50;
     }
 
-    .btn-success {
-        @apply bg-green-600 hover:bg-green-700 text-white;
-    }
-
-    /* Cards */
+    /* --- CARDS --- */
     .card {
-        @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+        @apply bg-white rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-100 p-8;
     }
 
-    .card-glass {
-        @apply bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8;
-    }
-
-    /* Inputs */
+    /* --- INPUTS (Sans le vert !) --- */
     .input {
-        @apply border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition w-full;
+        @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all placeholder:text-slate-400;
     }
 
-    .input:disabled {
-        @apply bg-gray-50 text-gray-500 cursor-not-allowed;
-    }
-
-    .input-error {
-        @apply border-red-500 focus:ring-red-500;
-    }
-
-    /* Festive inputs (pour vos formulaires avec fond coloré) */
-    .input-festive {
-        @apply w-full px-4 py-3 rounded-lg bg-white/20 border border-white/50 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 transition;
-    }
-
-    /* Links */
+    /* --- LINKS --- */
     a:not(.btn) {
-        @apply text-teal-600 hover:text-teal-700 transition-colors;
+        /* On passe du Violet au BLEU au survol */
+        @apply text-party-purple hover:text-party-blue transition-colors font-medium cursor-pointer decoration-party-blue/30 hover:underline underline-offset-4;
     }
-
-    /* Form labels */
-    .label {
-        @apply block text-sm font-medium text-gray-700 mb-2;
-    }
-
-    /* Badges */
-    .badge {
-        @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
-    }
-
-    .badge-primary {
-        @apply bg-teal-100 text-teal-800;
-    }
-
-    .badge-success {
-        @apply bg-green-100 text-green-800;
-    }
-
-    .badge-warning {
-        @apply bg-orange-100 text-orange-800;
-    }
-
-    .badge-danger {
-        @apply bg-red-100 text-red-800;
-    }
-
-    .badge-info {
-        @apply bg-blue-100 text-blue-800;
-    }
-
-    /* Alerts */
-    .alert {
-        @apply p-4 rounded-lg border;
-    }
-
-    .alert-success {
-        @apply bg-green-50 border-green-200 text-green-800;
-    }
-
-    .alert-error {
-        @apply bg-red-50 border-red-200 text-red-800;
-    }
-
-    .alert-warning {
-        @apply bg-orange-50 border-orange-200 text-orange-800;
-    }
-
-    .alert-info {
-        @apply bg-blue-50 border-blue-200 text-blue-800;
-    }
-
-    /* Sidebar (si vous en avez besoin) */
-    .sidebar {
-        @apply bg-white border-r border-gray-200 h-full;
-    }
-
-    .sidebar-item {
-        @apply px-4 py-2 hover:bg-gray-100 transition rounded-md cursor-pointer;
-    }
-
-    .sidebar-item-active {
-        @apply bg-teal-50 text-teal-700 font-medium;
-    }
-
-    /* Containers festifs pour vos pages */
-    .container-festive {
-        @apply min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-8;
-    }
-
-    .container-festive-blue {
-        @apply min-h-screen bg-gradient-to-br from-blue-400 via-cyan-500 to-teal-500 p-8;
-    }
-
-    .container-festive-purple {
-        @apply min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8;
-    }
+    /*a:not(.btn) {*/
+    /*    !* On passe du Violet à l'ORANGE au survol *!*/
+    /*    @apply text-party-purple hover:text-party-orange transition-colors font-medium cursor-pointer;*/
+    /*}*/
 }
 
-/* Utility layer - Vos utilitaires personnalisés */
-@layer utilities {
-    .text-muted {
-        @apply text-gray-600;
-    }
-
-    .border-subtle {
-        @apply border-gray-200;
-    }
-
-    .shadow-festive {
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    }
-
-    .backdrop-festive {
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-    }
-}
-
-/* Styles globaux pour les formulaires Symfony */
-form {
-    @apply space-y-4;
-}
-
+/* --- OVERRIDES SYMFONY FORMS --- */
 form label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+    @apply block text-sm font-bold text-slate-700 mb-2 ml-1;
 }
 
+/* Ciblage de tous les inputs pour appliquer le style violet */
 form input[type="text"],
 form input[type="email"],
 form input[type="password"],
 form input[type="url"],
 form input[type="number"],
+form input[type="date"],
 form textarea,
 form select {
-    @apply border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition w-full;
-}
-
-form input:disabled,
-form textarea:disabled,
-form select:disabled {
-    @apply bg-gray-50 text-gray-500 cursor-not-allowed;
+    @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all;
 }
 
 form button[type="submit"] {
-    @apply btn btn-primary;
+    @apply btn btn-primary w-full;
 }
 
-/* Gestion des erreurs de formulaire Symfony */
+/* Erreurs */
 .form-error {
-    @apply text-red-600 text-sm mt-1;
+    @apply text-party-pink text-sm mt-2 font-medium;
 }
-
-.form-error-list {
-    @apply list-none p-0 m-0;
-}
-
 .form-error-list li {
-    @apply text-red-600 text-sm mt-1;
-}
-
-/* Animations */
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.animate-slide-in {
-    animation: slideIn 0.3s ease-out;
-}
-
-.animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    @apply text-party-pink text-sm mt-1;
 }
