@@ -3,17 +3,21 @@
 namespace App\Service;
 
 // src/Service/PhotoPublisher.php
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
+use function Webmozart\Assert\Tests\StaticAnalysis\uuid;
 
 class PhotoPublisher
 {
-    public function __construct(private readonly HubInterface $hub) {}
+    public function __construct(private readonly HubInterface $hub, private readonly LoggerInterface $logger) {}
 
-    public function publish(string $topic, string $photoUrl, int $id): void
+    public function publish(string $groupId, string $photoUrl): void
     {
+
+        $topic = "{$groupId}";
+
         $data = [
-            'id' => $id,
             'url' => $photoUrl,
         ];
 
@@ -22,6 +26,18 @@ class PhotoPublisher
             data: json_encode($data)
         );
 
-        $this->hub->publish($update);
+        try {
+            $this->hub->publish($update);
+            $this->logger->info('📨 Message Mercure publié', [
+                'topic' => $topic,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('❌ Erreur publication Mercure', [
+                'topic' => $topic,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
 }

@@ -37,9 +37,12 @@
         const emptyState = galleryDOM.querySelector('.text-center');
 
         // Configuration
-        const mercureUrl = '{{ mercure_url|default("http://localhost:1337/.well-known/mercure") }}';
-        const mercureTopic = '{{ mercure_topic|default("https://example.com/photos/new") }}';
-        const default_path_image = '{{ default_path_image }}'
+        {#'{{ mercure_url|default("http://localhost:1337/.well-known/mercure") }}'#}
+        const mercureUrl =  '{{ mercure_url }}';
+        {#'{{ mercure_topic|default("https://example.com/photos/new") }}'#}
+        const mercureTopic = '{{ mercure_topic }}'; // topic = groupId
+        const defaultPathImage = '{{ default_path_image }}'
+        const baseUrl = window.location.origin //"http://127.0.0.1:8000/"
 
         let eventSource = null;
         let pathImages = []
@@ -49,7 +52,7 @@
             // Construire l'URL avec le topic
             const url = new URL(mercureUrl);
             url.searchParams.append('topic', mercureTopic);
-
+            console.warn(url)
             console.log('🔌 Connexion à Mercure:', url.toString());
 
             // Créer l'EventSource
@@ -58,6 +61,7 @@
             // ✅ Connexion établie
             eventSource.addEventListener('open', () => {
                 console.log('✅ Connecté à Mercure');
+                console.log('✅ Ecoute sur le topic :' + mercureTopic);
             });
 
             // 📨 Message reçu
@@ -91,7 +95,7 @@
         // 🖼️ Ajouter une photo à la galerie
         function addPhotoToGallery(data) {
 
-            let path = "http://127.0.0.1:8000/" + default_path_image + data.url;
+            let path = baseUrl + defaultPathImage + data.url;
             pathImages.push(path);
             console.log(pathImages)
 
