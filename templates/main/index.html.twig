@@ -1,148 +1,109 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bienvenue !{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* On garde la même base stylistique festive */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #f4d03f, #16a085, #f1c40f, #2ecc71);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* La carte de bienvenue */
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 3em;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-            z-index: 10;
-        }
-
-        .welcome-card h1 {
-            font-size: 2.8em;
-            margin-bottom: 0.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .welcome-card .user-name {
-            color: #f1c40f; /* Couleur dorée pour mettre en avant le nom */
-            font-weight: bold;
-        }
-
-        .welcome-card p {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 2em;
-        }
-
-        /* Bouton principal (Call To Action) */
-        .btn-cta {
-            display: inline-block;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px; /* Bouton arrondi */
-            background: linear-gradient(90deg, #16a085 0%, #f4d03f 100%);
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            margin-bottom: 1.5em;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        /* Lien de déconnexion */
-        .logout-link {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        .logout-link:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
-
-        /* Animation des confettis */
-        .confetti-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-        .confetti { position: absolute; width: 10px; height: 10px; background-color: #f0f; animation: fall linear infinite; }
-        @keyframes fall { to { transform: translateY(110vh) rotateZ(720deg); } }
-
-        {% for i in 1..30 %}
-        .confetti:nth-child({{ i }}) {
-            left: {{ random(0, 100) }}%;
-            background-color: {{ random(['#ffc300', '#ff5733', '#c70039', '#1abc9c', '#3498db', '#9b59b6']) }};
-            width: {{ random(8, 20) }}px;
-            height: {{ random(5, 10) }}px;
-            animation-duration: {{ random(4, 12) }}s;
-            animation-delay: -{{ random(0, 10) }}s;
-            opacity: {{ random(6, 10) / 10 }};
-            transform: rotateZ({{ random(0, 360) }}deg);
-        }
-        {% endfor %}
-    </style>
-{% endblock %}
+{% block title %}PartyApp - Gestion d'événements simplifiée{% endblock %}
 
 {% block body %}
-    {% for group in groups %}
-        {% include 'components/group-bar.html.twig' with { group: group } %}
-    {% endfor %}
+    <div class="relative min-h-screen bg-white overflow-hidden font-sans selection:bg-party-purple selection:text-white">
 
-    <div class="welcome-card">
-        <h1>
-            Bienvenue, <br>
-            {# On utilise l'identifiant de l'utilisateur. Si vous avez un champ 'firstName', utilisez app.user.firstName #}
-        </h1>
+        {# --- ARRIÈRE-PLAN ABSTRAIT (Le remplaçant "pro" des confettis) --- #}
+        {# Ce sont des taches de couleur floues pour donner de la profondeur sans faire "cirque" #}
+        <div class="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[600px] h-[600px] bg-party-purple/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[500px] h-[500px] bg-party-blue/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-party-pink/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <p>
-            Que la fête commence ! Vous êtes bien connecté(e).<br>
-            Explorez tout ce que notre site a à vous offrir.
-        </p>
+        {# --- CONTENU PRINCIPAL --- #}
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center min-h-screen py-12">
 
-        <div>
-            <a href="{{ path('app_logout') }}" class="logout-link">Se déconnecter</a>
+            <div class="text-center max-w-4xl mx-auto">
+
+                {# Badge "Nouveauté" ou Catégorie #}
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-slate-600 text-sm font-medium mb-8 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-party-yellow"></span>
+                    Solution de gestion événementielle
+                </div>
+
+                {# Titre Principal #}
+                <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-[1.1]">
+                    L'art de recevoir, <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-party-purple via-party-pink to-party-orange">
+                        réinventé.
+                    </span>
+                </h1>
+
+                {# Sous-titre #}
+                <p class="text-xl text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto">
+                    Une plateforme unique pour orchestrer vos mariages, soirées et fêtes d'entreprise.
+                    Centralisez vos invités et créez une expérience fluide.
+                </p>
+
+                {# Zone d'action (CTA) #}
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    {% if app.user %}
+                        {# État Connecté : Carte profil propre #}
+                        <div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-[20px] shadow-xl shadow-slate-200/50 border border-slate-100">
+                            <div class="h-12 w-12 bg-gradient-to-br from-party-blue to-party-purple rounded-squircle flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                {{ app.user.userIdentifier|first|upper }}
+                            </div>
+                            <div class="text-left">
+                                <div class="text-xs text-slate-400 font-semibold uppercase tracking-wide">Bonjour</div>
+                                <div class="text-slate-900 font-bold">{{ app.user.userIdentifier }}</div>
+                            </div>
+                            <div class="h-8 w-px bg-slate-200 mx-2"></div>
+                            <a href="#" class="text-party-purple hover:text-party-pink font-medium transition-colors">
+                                Dashboard
+                            </a>
+                            <a href="{{ path('app_logout') }}" class="text-slate-400 hover:text-slate-600 transition-colors" title="Déconnexion">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                </svg>
+                            </a>
+                        </div>
+                    {% else %}
+                        {# État Déconnecté : Boutons d'action #}
+                        <a href="#" class="group relative px-8 py-4 bg-slate-900 text-white font-bold rounded-[20px] transition-all hover:shadow-2xl hover:shadow-party-purple/20 hover:-translate-y-1">
+                            <span class="relative z-10">Commencer maintenant</span>
+                            {# Petit effet de brillance au survol #}
+                            <div class="absolute inset-0 h-full w-full rounded-[20px] bg-gradient-to-r from-party-purple to-party-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-0"></div>
+                        </a>
+
+                        <a href="#" class="px-8 py-4 text-slate-600 font-bold hover:text-slate-900 transition-colors bg-slate-50 hover:bg-slate-100 rounded-[20px] border border-slate-200">
+                            Se connecter
+                        </a>
+                    {% endif %}
+                </div>
+
+                {# Preuve sociale / Features rapides (Optionnel) #}
+                <div class="mt-16 pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                    <div class="p-6 rounded-2xl hover:bg-slate-50 transition-colors">
+                        <div class="w-10 h-10 bg-party-yellow/20 text-party-orange rounded-squircle flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-slate-900 mb-2">Gain de temps</h3>
+                        <p class="text-sm text-slate-500">Organisez tout en quelques clics grâce à nos outils automatisés.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl hover:bg-slate-50 transition-colors">
+                        <div class="w-10 h-10 bg-party-purple/20 text-party-purple rounded-squircle flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-slate-900 mb-2">Gestion Invités</h3>
+                        <p class="text-sm text-slate-500">Suivez les réponses, les régimes alimentaires et les +1 facilement.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl hover:bg-slate-50 transition-colors">
+                        <div class="w-10 h-10 bg-party-pink/20 text-party-pink rounded-squircle flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-slate-900 mb-2">Friendly & Fun</h3>
+                        <p class="text-sm text-slate-500">Une interface pensée pour que l'organisation reste un plaisir.</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
+
+        {# Footer discret #}
+        <div class="absolute bottom-4 w-full text-center">
+            <p class="text-xs text-slate-400">© {{ 'now'|date('Y') }} PartyApp - Tous droits réservés.</p>
+        </div>
+
     </div>
 {% endblock %}

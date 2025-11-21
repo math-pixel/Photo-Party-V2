@@ -64,7 +64,7 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
 php bin/console tailwind:build
-
+php bin/console tailwind:build --watch ( pour lancer en continue )
 
 tips :
 tailwind :
