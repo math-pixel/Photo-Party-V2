@@ -25,7 +25,7 @@ class ProjectionController extends AbstractController
             return $photo->getImageName();
         }, $photos);
 
-        print_r($photos);
+//        print_r($photos);
 
         $encodedPhotos = json_encode($photos);
 
