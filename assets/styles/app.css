@@ -61,6 +61,12 @@
         @apply bg-white text-red-600 border border-red-100 hover:bg-red-50;
     }
 
+    .btn-cancel {
+        @apply bg-white border border-slate-200 text-slate-400 shadow-sm;
+        /* Interaction : devient "Party Pink" au survol */
+        @apply hover:text-party-pink hover:bg-party-pink/5 hover:border-party-pink/30;
+    }
+
     /* --- CARDS --- */
     .card {
         @apply bg-white rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-100 p-8;
@@ -100,8 +106,13 @@ form select {
 }
 
 form button[type="submit"] {
-    @apply btn btn-primary w-full;
+    @apply btn w-full; /* Base commune */
 }
+
+form button[type="submit"]:not(.btn-cancel) {
+    @apply btn-primary; /* Style Noir par défaut, sauf si c'est un btn-cancel */
+}
+
 
 /* Erreurs */
 .form-error {

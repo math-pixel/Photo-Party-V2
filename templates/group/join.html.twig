@@ -1,33 +1,81 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Rejoindre le groupe{% endblock %}
+{% block title %}Invitation - PhotoParty{% endblock %}
 
 {% block body %}
-    <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div class="w-full max-w-md">
-            <!-- Card Container -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+    <div class="relative min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12 font-sans selection:bg-party-purple selection:text-white">
 
-                <!-- Question -->
-                <p class="text-lg text-gray-600 text-center">
-                    Voulez-vous rejoindre ce groupe ?
-                </p>
+        {# --- DÉCOR --- #}
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-party-blue/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-party-purple/5 rounded-full blur-3xl pointer-events-none"></div>
 
-                <!-- Group Name -->
-                <h1 class="text-3xl font-bold text-gray-900 mb-2 text-center mb-8">
+        <div class="relative z-10 w-full max-w-md">
+
+            <div class="bg-white rounded-[32px] shadow-xl shadow-slate-200/60 border border-slate-100 p-8 md:p-10 text-center">
+
+                {# 1. IDENTITÉ DU GROUPE (Le plus important d'abord) #}
+                <div class="mx-auto w-20 h-20 rounded-[24px] bg-gradient-to-br from-party-blue to-party-purple flex items-center justify-center mb-5 shadow-lg shadow-party-purple/20">
+                    <span class="text-3xl font-display font-bold text-white">
+                        {{ group.name|first|upper }}
+                    </span>
+                </div>
+
+                <h1 class="text-3xl font-display font-bold text-slate-900 mb-2 leading-tight">
                     {{ group.name }}
                 </h1>
 
-                <!-- Buttons -->
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-wide mb-8">
+                    Vous avez été invité(e) à rejoindre cet événement.
+                </p>
+
+                {# 2. MESSAGE DE BIENVENUE (Bloc Citation) #}
+                <div class="relative bg-party-yellow/10 rounded-2xl p-6 mb-8 text-left">
+                    {# Icône guillemets #}
+                    <svg class="absolute top-4 left-4 w-6 h-6 text-party-yellow/50 -translate-x-2 -translate-y-2" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.896 14.321 15.2936 14.928 13.192C15.535 11.0904 16.471 9.52533 17.736 8.49666C19.001 7.468 20.429 6.95367 22.02 6.95367L22.02 9.96067C21.281 9.96067 20.633 10.1397 20.076 10.4977C19.519 10.8557 19.2403 11.5937 19.2403 12.7117L19.2403 15L22.02 15L22.02 21L14.017 21ZM5.01667 21L5.01667 18C5.01667 16.896 5.32067 15.2936 5.92767 13.192C6.53467 11.0904 7.47067 9.52533 8.73567 8.49666C10.0007 7.468 11.4287 6.95367 13.0197 6.95367L13.0197 9.96067C12.2807 9.96067 11.6327 10.1397 11.0757 10.4977C10.5187 10.8557 10.24 11.5937 10.24 12.7117L10.24 15L13.0197 15L13.0197 21L5.01667 21Z"/></svg>
+
+                    {# Le texte #}
+                    <p class="text-slate-800 italic font-medium relative z-10 text-sm leading-relaxed mb-4">
+                        {% if false %}
+                            "{{ group.description }}"
+                        {% else %}
+{#                            todo enlever le text si il n'y a pas de description#}
+                            "Bienvenue ! Rejoignez-nous pour partager les photos de l'événement."
+                        {% endif %}
+                    </p>
+
+                    {# 3. LA SIGNATURE (L'organisateur est ici maintenant) #}
+                    <div class="flex items-center justify-end gap-2 border-t border-party-yellow/20 pt-3 mt-2">
+                        <span class="text-xs text-slate-500">Organisé par</span>
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-5 h-5 rounded-full bg-party-yellow text-party-orange flex items-center justify-center text-[10px] font-bold">
+                                {{ group.owner.firstname|default('U')|first|upper }}
+                            </div>
+                            <span class="text-sm font-bold text-slate-900">
+                                {{ group.owner.firstname|default('L\'organisateur') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {# 4. ACTIONS #}
                 {{ form_start(confirmation_form) }}
-                <div class="flex gap-4">
 
-                    {{ form_widget(confirmation_form.confirm) }}
+                <div class="flex flex-col gap-3">
+                    {# Bouton Primary #}
+                    {{ form_widget(confirmation_form.confirm, {
+                        'attr': {
+                            'class': 'btn btn-primary w-full justify-center py-4 text-lg shadow-lg shadow-party-purple/10'
+                        },
+                        'label': 'Rejoindre le groupe'
+                    }) }}
 
-
-                    {{ form_widget(confirmation_form.cancel) }}
-
-
+                    {# Bouton Cancel #}
+                    {{ form_widget(confirmation_form.cancel, {
+                        'attr': {
+                            'class': 'btn btn-cancel w-full justify-center'
+                        },
+                        'label': 'Refuser'
+                    }) }}
                 </div>
 
                 {{ form_end(confirmation_form) }}
