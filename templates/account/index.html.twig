@@ -1,220 +1,101 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier mon profil{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-        /* -- Arrière-plan festif et animé -- */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #4b0082, #8a2be2, #4169e1, #00ced1);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            color: #fff;
-            margin: 0;
-            padding: 2rem 1rem; /* Ajout de padding pour les petits écrans */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Aligner en haut pour voir le début de la page si elle est longue */
-            min-height: 100vh;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* -- La carte principale -- */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2em 2.5em;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 100%;
-            max-width: 700px;
-        }
-
-        h1, h2 {
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        h1 { font-size: 2.5em; margin-bottom: 1em; }
-        h2 { font-size: 1.8em; margin-top: 1.5em; margin-bottom: 1em; }
-
-        /* -- Style des champs du formulaire -- */
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1em;
-        }
-        .form-group input::placeholder { color: rgba(255, 255, 255, 0.7); }
-
-        /* -- Bouton principal -- */
-        .btn-primary {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(90deg, #8a2be2 0%, #4169e1 100%);
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-        }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
-
-        /* -- Séparateur visuel -- */
-        hr {
-            border: 0;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.2);
-            margin: 2.5em 0;
-        }
-
-        /* -- Liste des groupes -- */
-        .groups-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .group-item {
-            background: rgba(0, 0, 0, 0.15);
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap; /* Pour la réactivité mobile */
-            gap: 1rem;
-        }
-
-        .group-info {
-            flex-grow: 1;
-        }
-
-        .group-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .group-role {
-            display: inline-block;
-            padding: 0.2em 0.6em;
-            border-radius: 5px;
-            font-size: 0.9em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        /* Styles conditionnels pour les rôles */
-        .role-admin {
-            background-color: #f1c40f; /* Doré */
-            color: #333;
-        }
-        .role-member {
-            background-color: #3498db; /* Bleu */
-            color: #fff;
-        }
-
-        .group-actions .btn-secondary {
-            padding: 0.6em 1.2em;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            background: #f1c40f;
-            color: #333;
-            transition: all 0.2s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .group-actions .btn-secondary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .no-groups {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(0,0,0,0.1);
-            border-radius: 10px;
-        }
-
-    </style>
-{% endblock %}
+{% block title %}Mon Profil - PhotoParty{% endblock %}
 
 {% block body %}
-    <div class="profile-card">
-        <h1>Modifier mon profil</h1>
+    <div class="relative min-h-screen bg-slate-50 flex flex-col items-center justify-start px-4 py-12 overflow-hidden font-sans selection:bg-party-purple selection:text-white">
 
-        {{ form_start(profileForm) }}
-        <div class="form-group">
-            {{ form_label(profileForm.email) }}
-            {{ form_widget(profileForm.email) }}
-            {{ form_errors(profileForm.email) }}
-        </div>
+        {# --- DÉCORATION D'ARRIÈRE-PLAN --- #}
+        <div class="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4 w-[600px] h-[600px] bg-party-purple/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -translate-x-1/4 translate-y-1/4 w-[500px] h-[500px] bg-party-blue/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        {# Ajoutez ici d'autres champs de votre formulaire, ex: nom, prénom #}
-        {# Exemple avec un champ 'username'
-            <div class="form-group">
-                {{ form_label(profileForm.username) }}
-                {{ form_widget(profileForm.username) }}
-                {{ form_errors(profileForm.username) }}
+        <div class="relative z-10 w-full max-w-2xl">
+
+            {# --- HEADER --- #}
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-display font-bold text-slate-900 mb-2">
+                    Mon <span class="text-transparent bg-clip-text bg-gradient-to-r from-party-blue to-party-purple">Compte</span>
+                </h1>
+                <p class="text-slate-500">Gérez vos informations.</p>
             </div>
-        #}
 
-        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-        {{ form_end(profileForm) }}
+            {# --- CARTE PROFIL --- #}
+            <div class="bg-white rounded-[32px] shadow-xl shadow-slate-200/60 p-8 md:p-10 border border-slate-100 mb-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-party-purple">
+                        <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
+                    </svg>
+                    Informations personnelles
+                </h2>
 
-        <hr>
-
-        <h2>Mes Groupes</h2>
-
-        <div class="groups-list">
-            {% for membership in memberships %}
-                <div class="group-item">
-                    <div class="group-info">
-                        <p class="group-name">{{ membership.group.name }}</p>
-                        {# On ajoute une classe CSS en fonction du rôle pour un style différent #}
-                        {% set role_class = (membership.role == 'ROLE_ADMIN' ? 'role-admin' : 'role-member') %}
-                        {# On affiche un nom de rôle plus sympa pour l'utilisateur #}
-                        {% set role_name = (membership.role == 'ROLE_ADMIN' ? 'Administrateur' : 'Membre') %}
-
-                        <span class="group-role {{ role_class }}">{{ role_name }}</span>
+                {# --- DÉBUT DU BLOC FLASH MESSAGE --- #}
+                {% for message in app.flashes('success') %}
+                    <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-4 rounded-xl flex items-center gap-3 shadow-sm" role="alert">
+                        {# Petite icône de succès #}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                            <span class="font-bold block">Succès !</span>
+                            <span class="text-sm">{{ message }}</span>
+                        </div>
                     </div>
+                {% endfor %}
+                {# --- FIN DU BLOC FLASH MESSAGE --- #}
 
-                    <div class="group-actions">
-                        {# C'est ici que la magie opère ! #}
-                        {# ATTENTION : Remplacez 'ROLE_ADMIN' par le nom exact de votre rôle admin si différent #}
-                        {% if membership.role == 'ROLE_ADMIN' %}
-                            <a href="{{ path('app_group_settings', {'id': membership.group.id}) }}" class="btn-secondary">
-                                Paramètres du groupe
-                            </a>
-                        {% endif %}
+                {{ form_start(profileForm, { 'attr': { 'class': 'space-y-5' } }) }}
+
+                {# --- GRID PRENOM / NOM --- #}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        {{ form_label(profileForm.first_name, 'Prénom', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700 mb-2 ml-1' } }) }}
+                        {{ form_widget(profileForm.first_name, {
+                            'attr': {
+                                'class': 'w-full px-5 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all',
+                                'placeholder': 'Votre prénom'
+                            }
+                        }) }}
+                        {{ form_errors(profileForm.first_name) }}
+                    </div>
+                    <div>
+                        {{ form_label(profileForm.last_name, 'Nom', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700 mb-2 ml-1' } }) }}
+                        {{ form_widget(profileForm.last_name, {
+                            'attr': {
+                                'class': 'w-full px-5 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all',
+                                'placeholder': 'Votre nom'
+                            }
+                        }) }}
+                        {{ form_errors(profileForm.last_name) }}
                     </div>
                 </div>
-            {% else %}
-                <div class="no-groups">
-                    <p>Vous n'êtes membre d'aucun groupe pour le moment.</p>
+
+                {# --- EMAIL --- #}
+                <div>
+                    {{ form_label(profileForm.email, 'Adresse Email', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700 mb-2 ml-1' } }) }}
+                    {{ form_widget(profileForm.email, {
+                        'attr': {
+                            'class': 'w-full px-5 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all',
+                            'placeholder': 'exemple@email.com'
+                        }
+                    }) }}
+                    {{ form_errors(profileForm.email, { 'attr': { 'class': 'text-party-pink text-sm mt-2 ml-1' } }) }}
                 </div>
-            {% endfor %}
+
+                <div class="pt-4">
+                    <button type="submit" class="btn w-full bg-party-purple text-white font-bold py-3 rounded-xl shadow-lg shadow-party-purple/20 hover:bg-party-purple/90 transition-all">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+
+                {{ form_end(profileForm) }}
+            </div>
+
+            {# --- FOOTER LINK --- #}
+            <div class="text-center mt-8">
+                <a href="/" class="text-slate-400 hover:text-slate-600 text-sm font-medium transition-colors">
+                    Retour à l'accueil
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}
