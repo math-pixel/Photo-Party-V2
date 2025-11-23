@@ -108,6 +108,25 @@ php bin/console doctrine:fixtures:load
 symfony server:start
 ```
 
+
+
+***
+
+## 🐳 Docker & Real-time Setup (Mercure)
+
+To enable real-time features (projector live feed), you must run the **Mercure Hub** using Docker. A specific Compose file is provided for this configuration.
+
+Make sure **Docker Desktop** is running, then execute the following command:
+
+```bash
+docker compose -f .\compose_mercure.yaml up -d --build
+```
+
+**Command breakdown:**
+*   `-f .\compose_mercure.yaml`: Tells Docker to use the specific Mercure configuration file instead of the default `docker-compose.yml`.
+*   `up -d`: Starts the container in "detached" mode (background).
+*   `--build`: Rebuilds the images to ensure you have the latest configuration.
+
 ---
 
 ## 🗺 Roadmap & Features
