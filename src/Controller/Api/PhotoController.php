@@ -36,7 +36,7 @@ class PhotoController extends AbstractController
         try {
             $publisher->publishUpdatePhotoAllowed($photoId, $isAllowed);
         }catch (\Exception $exception){
-            return new JsonResponse(['error' => $exception->getMessage()], 400);
+            print($exception->getMessage());
         }
 
         return new JsonResponse([

@@ -53,19 +53,59 @@
                     {# GRILLE DES PHOTOS #}
                     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                         {% for photo in photos %}
-                            {#
-                            Logique Alpine JS :
-                            - isHidden : stocke l'état localement (pour l'effet visuel immédiat)
-                            - toggle() : Inverse l'état.
-                            TODO: Connecter cela à une requête AJAX pour sauvegarder en BDD
-                            #}
-                            <div x-data="{ isHidden: {{ photo.isAllowed ? 'false' : 'true' }} }"
-                                 @click="isHidden = !isHidden"
-                                 class="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
-                                 :class="isHidden ? 'ring-4 ring-slate-900' : 'ring-1 ring-slate-200'">
+                            <div
+                                x-data="{
+                                    isHidden: {{ photo.isAllowed ? 'false' : 'true' }},
+                                    isLoading: false,
+                                    photoId: {{ photo.id }},
+
+                                    async toggleVisibility() {
+                                        // 1. Anti-spam clic
+                                        if (this.isLoading) return;
+
+                                        // 2. Sauvegarde l'état précédent en cas d'erreur
+                                        const previousState = this.isHidden;
+
+                                        // 3. Mise à jour Optimiste (On change l'UI tout de suite)
+                                        this.isHidden = !this.isHidden;
+                                        this.isLoading = true;
+
+                                        // 4. Préparation des données
+                                        const formData = new FormData();
+                                        formData.append('photoID', this.photoId);
+                                        // Si c'est caché, isAllowed = 0 (false), sinon 1 (true)
+                                        formData.append('isAllowed', this.isHidden ? '0' : '1');
+
+                                        try {
+                                            const response = await fetch('{{ path('api_photo_upload') }}', {
+                                                method: 'POST',
+                                                body: formData
+                                            });
+
+                                            if (!response.ok) throw new Error('Erreur serveur');
+
+                                            // Optionnel : console.log('Sauvegardé');
+
+                                        } catch (error) {
+                                            console.error(error);
+                                            // 5. En cas d'erreur, on annule le changement visuel
+                                            this.isHidden = previousState;
+                                            alert('Impossible de modifier l\'état de la photo.');
+                                            console.log(error)
+                                        } finally {
+                                            this.isLoading = false;
+                                        }
+                                    }
+                                }"
+                                @click="toggleVisibility()"
+                                class="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
+                                :class="[
+                                    isHidden ? 'ring-4 ring-slate-900' : 'ring-1 ring-slate-200',
+                                    isLoading ? 'opacity-70 cursor-wait' : ''
+                                ]">
 
                                 {# L'image #}
-                                <img src=" {{  [app.request.getBaseURL(), default_path_image, photo.imageName]|join }}"
+                                <img src="{{ [app.request.getBaseURL(), default_path_image, photo.imageName]|join }}"
                                      alt="Photo {{ photo.id }}"
                                      class="w-full h-full object-cover transition-all duration-300"
                                      :class="isHidden ? 'grayscale blur-[2px] scale-110' : ''"
@@ -84,8 +124,16 @@
                                     <span class="text-xs font-bold uppercase tracking-wider">Masquée</span>
                                 </div>
 
+                                {# Petit indicateur de chargement (Spinner optionnel) #}
+                                <div x-show="isLoading" class="absolute top-2 right-2">
+                                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                </div>
+
                                 {# Petit indicateur au survol quand visible #}
-                                <div class="absolute inset-0 bg-party-purple/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" x-show="!isHidden"></div>
+                                <div class="absolute inset-0 bg-party-purple/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" x-show="!isHidden && !isLoading"></div>
                             </div>
                         {% endfor %}
 
