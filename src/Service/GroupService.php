@@ -36,6 +36,5 @@ class GroupService
         }
 
         return null;
-
     }
 }

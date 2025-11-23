@@ -276,4 +276,12 @@ class Group
 
         return $this;
     }
+
+    public function isOwnedBy(?User $user): bool
+    {
+        return $this->getUserGroups()->exists(function($key, UserGroup $ug) use ($user) {
+            // On compare l'objet User ET la valeur string de l'Enum
+            return $ug->getUser() === $user && $ug->getRole() === GroupRole::ADMIN->value;
+        });
+    }
 }

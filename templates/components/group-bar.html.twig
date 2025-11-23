@@ -67,11 +67,11 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
                         </svg>
-                        Lancer
+                        Projeter Photos
                     </a>
 
                     <!-- B. BOUTON AJOUTER PHOTO -->
-                    <a href="{{ path('app_projection', {id: group.id}) }}"
+                    <a href="{{ path('app_client', {id: group.id}) }}"
                        class="btn flex-1 gap-2 px-5 py-3 rounded-xl shadow-none bg-party-pink/10 text-party-pink hover:bg-party-pink hover:text-white hover:shadow-lg hover:shadow-party-pink/30 transition-all duration-200 whitespace-nowrap justify-center"
                        title="Ajouter une photo">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
@@ -97,8 +97,8 @@
                     </button>
 
                     <!-- D. BOUTON REGLAGES -->
-{#                    {% if group.owner == app.user %}#}
-                        <a href="{{ path('app_main', {id: group.id}) }}"
+                    {% if group.isOwnedBy(app.user) == app.user %}
+                        <a href="{{ path('group_administration', {id: group.id}) }}"
                            class="btn flex-1 gap-2 px-5 py-3 rounded-xl shadow-none bg-party-orange/10 text-party-orange hover:bg-party-orange hover:text-white hover:shadow-lg hover:shadow-party-orange/30 transition-all duration-200 whitespace-nowrap justify-center"
                            title="Paramètres du groupe">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
@@ -107,7 +107,7 @@
                             </svg>
                             <span class="hidden sm:inline">Réglages</span>
                         </a>
-{#                    {% endif %}#}
+                    {% endif %}
                 </div>
             </div>
         </div>

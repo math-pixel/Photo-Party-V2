@@ -35,10 +35,9 @@
 
                     {# Le texte #}
                     <p class="text-slate-800 italic font-medium relative z-10 text-sm leading-relaxed mb-4">
-                        {% if false %}
+                        {% if group.description %}
                             "{{ group.description }}"
                         {% else %}
-{#                            todo enlever le text si il n'y a pas de description#}
                             "Bienvenue ! Rejoignez-nous pour partager les photos de l'événement."
                         {% endif %}
                     </p>
