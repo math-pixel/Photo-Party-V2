@@ -40,4 +40,32 @@ class PhotoPublisher
             throw $e;
         }
     }
+
+    public function publishUpdatePhotoAllowed(int $photoId, bool $isAllowed){
+        $topic = "updatePhotoAllowed";
+
+        $data = [
+            'photoID' => $photoId,
+            'isAllowed' => $isAllowed
+        ];
+
+        $update = new Update(
+            topics: $topic,
+            data: json_encode($data)
+        );
+
+        try {
+            $this->hub->publish($update);
+            $this->logger->info('📨 Message Mercure publié', [
+                'topic' => $topic,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('❌ Erreur publication Mercure', [
+                'topic' => $topic,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
 }
