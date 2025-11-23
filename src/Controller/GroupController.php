@@ -4,9 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Group;
 use App\Entity\GroupRole;
+use App\Entity\Photo;
 use App\Entity\User;
 use App\Entity\UserGroup;
+use App\Form\GroupAdministrationFormType;
+use App\Form\GroupAdministrationType;
 use App\Form\GroupType;
+use App\Form\PhotoType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -54,13 +58,16 @@ class GroupController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'group_show', requirements: ['id' => '\d+'])]
+    #[Route('/administrate/{id}', name: 'group_administration', requirements: ['id' => '\d+'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function show(Group $group, EntityManagerInterface $em): Response
+    public function administrate(
+        Group $group,
+        EntityManagerInterface $em,
+        Request $request): Response
     {
         $user = $this->getUser();
 
-        // verif si le user est dans le groupe et que il est admin
+        // verif si le user est dans le groupe
         $userGroup = $em->getRepository(UserGroup::class)->findOneBy([
             'group' => $group,
             'user' => $user,
@@ -68,12 +75,38 @@ class GroupController extends AbstractController
 
         if (!$userGroup) {
             $this->addFlash('error', 'Vous n\'êtes pas membre de ce groupe.');
+            print("pas membre");
             return $this->redirectToRoute('app_main');
         }
 
-        return $this->render('group/show.html.twig', [
+        // if the user is admin
+        if ($userGroup->getRole() != GroupRole::ADMIN) {
+            //todo check why is not admin ( error dont detect is admin )
+            $this->addFlash('error', 'Vous n\'êtes pas admin de ce groupe.');
+//            return $this->redirectToRoute('app_main');
+        }
+
+
+        $form = $this->createForm(GroupAdministrationType::class, $group);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            print_r($form->getData());
+
+            $this->addFlash('success', 'Modification apporter avec succes');
+
+            return $this->redirectToRoute('group_administration', [
+                'id' => $group->getId()
+            ]);
+        }
+
+
+        return $this->render('group/administration.html.twig', [
             'group' => $group,
             'userRole' => $userGroup->getRole(),
+            'photos' => $group->getPhotos(),
+            'formAdmin' => $form->createView(),
         ]);
     }
 

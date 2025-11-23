@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: '`Group`')]
+#[Vich\Uploadable]
 class Group
 {
     #[ORM\Id]
@@ -27,11 +30,17 @@ class Group
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $url_image1 = null;
+    #[Vich\UploadableField(mapping: 'group_images', fileNameProperty: 'image1Name')]
+    private ?File $image1File = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $url_image2 = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image1Name = null;
+
+    #[Vich\UploadableField(mapping: 'group_images', fileNameProperty: 'image2Name')]
+    private ?File $image2File = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image2Name = null;
 
     /**
      * @var Collection<int, UserGroup>
@@ -44,6 +53,15 @@ class Group
      */
     #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'group')]
     private Collection $photos;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isExplicit = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isModerated = null;
 
     public function __construct()
     {
@@ -98,27 +116,46 @@ class Group
         return $this;
     }
 
-    public function getUrlImage1(): ?string
+    public function getImage1Name(): ?string
     {
-        return $this->url_image1;
+        return $this->image1Name;
     }
 
-    public function setUrlImage1(string $url_image1): static
+    public function setImage1Name(string $imageName): static
     {
-        $this->url_image1 = $url_image1;
+        $this->image1Name = $imageName;
 
         return $this;
     }
 
-    public function getUrlImage2(): ?string
+    public function getImage1File(): ?File
     {
-        return $this->url_image2;
+        return $this->image1File;
     }
 
-    public function setUrlImage2(?string $url_image2): static
+    public function setImage1File(?File $image1File = null): void
     {
-        $this->url_image2 = $url_image2;
+        $this->image1File = $image1File;
+    }
 
+    public function getImage2File(): ?File
+    {
+        return $this->image2File;
+    }
+
+    public function setImage2File(?File $image2File = null): void
+    {
+        $this->image2File = $image2File;
+    }
+
+    public function getImage2Name(): ?string
+    {
+        return $this->image2Name;
+    }
+
+    public function setImage2Name(string $imageName): static
+    {
+        $this->image2Name = $imageName;
         return $this;
     }
 
@@ -178,6 +215,42 @@ class Group
                 $photo->setGroup(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function isExplicit(): ?bool
+    {
+        return $this->isExplicit;
+    }
+
+    public function setIsExplicit(?bool $isExplicit): static
+    {
+        $this->isExplicit = $isExplicit;
+
+        return $this;
+    }
+
+    public function isModerated(): ?bool
+    {
+        return $this->isModerated;
+    }
+
+    public function setIsModerated(?bool $isModerated): static
+    {
+        $this->isModerated = $isModerated;
 
         return $this;
     }
