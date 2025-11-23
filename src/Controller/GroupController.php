@@ -158,7 +158,7 @@ class GroupController extends AbstractController
                 $em->persist($userGroup);
                 $em->flush();
 
-                return $this->redirectToRoute('group_show', ['id' => $group->getId()]);
+                return $this->redirectToRoute('app_client', ['id' => $group->getId()]);
             }
 
             return $this->redirectToRoute('app_main');
