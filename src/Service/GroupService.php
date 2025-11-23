@@ -37,4 +37,22 @@ class GroupService
 
         return null;
     }
+
+    public function isUserInGroup($user, $group){
+        $userGroupRepository = $this->em->getRepository(UserGroup::class);
+
+        $userGroups = $userGroupRepository->findBy(
+            [
+                'user' => $user,
+                'group' => $group
+            ]
+        );
+
+        if (!empty($userGroups)) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

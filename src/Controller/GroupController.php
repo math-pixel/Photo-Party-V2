@@ -4,13 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Group;
 use App\Entity\GroupRole;
-use App\Entity\Photo;
 use App\Entity\User;
 use App\Entity\UserGroup;
-use App\Form\GroupAdministrationFormType;
 use App\Form\GroupAdministrationType;
 use App\Form\GroupType;
-use App\Form\PhotoType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
