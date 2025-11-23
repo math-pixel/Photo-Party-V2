@@ -59,7 +59,7 @@
                             - toggle() : Inverse l'état.
                             TODO: Connecter cela à une requête AJAX pour sauvegarder en BDD
                             #}
-                            <div x-data="{ isHidden: {{ photo.isAllowed ? 'true' : 'false' }} }"
+                            <div x-data="{ isHidden: {{ photo.isAllowed ? 'false' : 'true' }} }"
                                  @click="isHidden = !isHidden"
                                  class="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
                                  :class="isHidden ? 'ring-4 ring-slate-900' : 'ring-1 ring-slate-200'">
