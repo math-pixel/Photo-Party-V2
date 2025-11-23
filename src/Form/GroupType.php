@@ -12,6 +12,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class GroupType extends AbstractType
 {
@@ -34,29 +35,23 @@ class GroupType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('url_image1', UrlType::class, [
-                'label' => 'URL Image de couverture',
+            ->add('image1File', VichImageType::class, [
+                'label' => 'Image Principale',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'https://exemple.com/image1.jpg'
-                ],
-                'constraints' => [
-                    new Url([
-                        'message' => 'Veuillez entrer une URL valide',
-                    ]),
-                ],
+                'allow_delete' => true,
+                'delete_label' => 'Supprimer l\'image actuelle',
+                'download_uri' => false,
+                'image_uri' => false,
+                'asset_helper' => true,
             ])
-            ->add('url_image2', UrlType::class, [
-                'label' => 'URL Image secondaire',
+            ->add('image2File', VichImageType::class, [
+                'label' => 'Image Secondaire',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'https://exemple.com/image2.jpg'
-                ],
-                'constraints' => [
-                    new Url([
-                        'message' => 'Veuillez entrer une URL valide',
-                    ]),
-                ],
+                'allow_delete' => true,
+                'delete_label' => 'Supprimer l\'image actuelle',
+                'download_uri' => false,
+                'image_uri' => false,
+                'asset_helper' => true,
             ])
         ;
     }

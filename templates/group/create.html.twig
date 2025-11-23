@@ -24,6 +24,7 @@
             {# --- CARTE FORMULAIRE --- #}
             <div class="bg-white rounded-[32px] shadow-xl shadow-slate-200/60 p-8 md:p-10 border border-slate-100">
 
+                {# Note: form_start gère automatiquement enctype="multipart/form-data" pour les fichiers #}
                 {{ form_start(groupForm, { 'attr': { 'class': 'space-y-6' } }) }}
 
                 {# --- NOM DU GROUPE --- #}
@@ -38,41 +39,56 @@
                     {{ form_errors(groupForm.name, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
                 </div>
 
-                {# --- IMAGE 1 --- #}
+                {# --- IMAGE 1 (FILE UPLOAD) --- #}
                 <div>
                     <div class="flex justify-between items-center mb-2 ml-1">
-                        {{ form_label(groupForm.url_image1, 'Image de couverture (URL)', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700' } }) }}
-                        <span class="text-xs font-bold text-party-blue bg-party-blue/10 px-2 py-0.5 rounded-md">Recommandé</span>
-                    </div>
-
-                    {{ form_widget(groupForm.url_image1, {
-                        'attr': {
-                            'class': 'w-full px-5 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all placeholder:text-slate-400',
-                            'placeholder': 'https://...'
-                        }
-                    }) }}
-                    {{ form_errors(groupForm.url_image1, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
-                </div>
-
-                {# --- IMAGE 2 --- #}
-                <div>
-                    <div class="flex justify-between items-center mb-2 ml-1">
-                        {{ form_label(groupForm.url_image2, 'Image secondaire (URL)', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700' } }) }}
+                        {# On pointe vers image2File #}
+                        {{ form_label(groupForm.image2File, 'Image secondaire', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700' } }) }}
                         <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Optionnel</span>
                     </div>
 
-                    {{ form_widget(groupForm.url_image2, {
+                    {# Style personnalisé pour l'input file #}
+                    {{ form_widget(groupForm.image1File, {
                         'attr': {
-                            'class': 'w-full px-5 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all placeholder:text-slate-400',
-                            'placeholder': 'https://...'
+                            'class': 'block w-full text-sm text-slate-500
+                                      file:mr-4 file:py-2.5 file:px-4
+                                      file:rounded-full file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-party-purple/10 file:text-party-purple
+                                      hover:file:bg-party-purple/20
+                                      cursor-pointer
+                                      bg-slate-50 border border-slate-200 rounded-xl focus:outline-none p-2'
                         }
                     }) }}
-                    {{ form_errors(groupForm.url_image2, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
+                    {{ form_errors(groupForm.image1File, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
+                </div>
+
+                {# --- IMAGE 2 (FILE UPLOAD) --- #}
+                <div>
+                    <div class="flex justify-between items-center mb-2 ml-1">
+                        {# On pointe vers image2File #}
+                        {{ form_label(groupForm.image2File, 'Image secondaire', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700' } }) }}
+                        <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Optionnel</span>
+                    </div>
+
+                    {{ form_widget(groupForm.image2File, {
+                        'attr': {
+                            'class': 'block w-full text-sm text-slate-500
+                                      file:mr-4 file:py-2.5 file:px-4
+                                      file:rounded-full file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-party-purple/10 file:text-party-purple
+                                      hover:file:bg-party-purple/20
+                                      cursor-pointer
+                                      bg-slate-50 border border-slate-200 rounded-xl focus:outline-none p-2'
+                        }
+                    }) }}
+                    {{ form_errors(groupForm.image2File, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
                 </div>
 
                 {# --- BOUTON SUBMIT --- #}
                 <div class="pt-4">
-                    <button type="submit" class="btn btn-primary w-full text-lg shadow-xl shadow-party-purple/20">
+                    <button type="submit" class="btn btn-primary w-full text-lg shadow-xl shadow-party-purple/20 bg-party-purple text-white py-3 rounded-xl font-bold hover:bg-party-purple/90 transition-colors">
                         Créer le groupe
                     </button>
                 </div>

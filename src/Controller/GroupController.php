@@ -49,7 +49,7 @@ class GroupController extends AbstractController
 
             $this->addFlash('success', 'Le groupe a été créé avec succès !');
 
-            return $this->redirectToRoute('group_show', ['id' => $group->getId()]);
+            return $this->redirectToRoute('group_administration', ['id' => $group->getId()]);
         }
 
         return $this->render('group/create.html.twig', [
