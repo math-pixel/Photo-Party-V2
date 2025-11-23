@@ -24,7 +24,7 @@
     </head>
 
     <body>
-        {% if is_granted('IS_AUTHENTICATED') %}
+        {% if is_granted('IS_AUTHENTICATED') and app.request.get('_route') != 'app_projection' %}
             {% include 'partials/header.html.twig' %}
         {% endif %}
 

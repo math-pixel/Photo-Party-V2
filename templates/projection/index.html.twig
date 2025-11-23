@@ -25,10 +25,10 @@
         <!-- Added logos positioned at bottom-right, max 5% screen width -->
         <div class="fixed bottom-4 right-4 flex flex-col items-end gap-2 bg-blue-100">
             <!-- Logo 2 (au-dessus) -->
-            <img src="{{ asset(groupParameter.getUrlImage2|default("")) }}" alt="" class="max-w-[5vw] h-auto">
+            <img src="{{ [app.request.getBaseURL(), default_path_image_group, groupParameter.getImage2Name]|join }}" alt="" class="max-w-[5vw] h-auto">
 
             <!-- Logo 1 (en bas) -->
-            <img src="{{ asset(groupParameter.getUrlImage1|default("")) }}" alt="" class="max-w-[5vw] h-auto">
+            <img src="{{ [app.request.getBaseURL(), default_path_image_group, groupParameter.getImage1Name]|join }}" alt="" class="max-w-[5vw] h-auto">
         </div>
     </div>
 
