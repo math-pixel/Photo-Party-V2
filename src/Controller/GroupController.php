@@ -92,13 +92,24 @@ class GroupController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            print_r($form->getData());
+//            $this->addFlash('success', 'Modification apporter avec succes');
 
-            $this->addFlash('success', 'Modification apporter avec succes');
+            // DEBUG TEMPORAIRE
+//             dd($group->getImage1File());
+            // Si ça affiche "null", c'est que le formulaire n'envoie pas le fichier.
+            // Si ça affiche un objet UploadedFile, c'est que Vich ou la BDD bloque.
+
+            $em->persist($userGroup);
+            $em->flush();
 
             return $this->redirectToRoute('group_administration', [
                 'id' => $group->getId()
             ]);
+        }
+        elseif ($form->isSubmitted()) {
+            // Si on arrive ici, c'est que le formulaire est soumis mais INVALIDE
+            // Cette commande va t'afficher la liste précise des erreurs
+//            dd($form->getErrors(true, false));
         }
 
 

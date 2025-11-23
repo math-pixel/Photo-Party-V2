@@ -63,6 +63,10 @@ class Group
     #[ORM\Column(nullable: true)]
     private ?bool $isModerated = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+
     public function __construct()
     {
         $this->userGroups = new ArrayCollection();
@@ -121,7 +125,7 @@ class Group
         return $this->image1Name;
     }
 
-    public function setImage1Name(string $imageName): static
+    public function setImage1Name(?string $imageName): static
     {
         $this->image1Name = $imageName;
 
@@ -136,6 +140,9 @@ class Group
     public function setImage1File(?File $image1File = null): void
     {
         $this->image1File = $image1File;
+        if (null !== $image1File) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
     public function getImage2File(): ?File
@@ -146,6 +153,9 @@ class Group
     public function setImage2File(?File $image2File = null): void
     {
         $this->image2File = $image2File;
+        if (null !== $image2File) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
     public function getImage2Name(): ?string
@@ -153,7 +163,7 @@ class Group
         return $this->image2Name;
     }
 
-    public function setImage2Name(string $imageName): static
+    public function setImage2Name(?string $imageName): static
     {
         $this->image2Name = $imageName;
         return $this;
@@ -251,6 +261,18 @@ class Group
     public function setIsModerated(?bool $isModerated): static
     {
         $this->isModerated = $isModerated;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
