@@ -28,8 +28,6 @@ final class ClientController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // todo si pas de photo ne pas ajouter une row
-
             $em->persist($photo);
             $em->flush();
 
