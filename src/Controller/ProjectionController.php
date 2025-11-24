@@ -42,9 +42,8 @@ class ProjectionController extends AbstractController
         $encodedPhotos = json_encode($photos);
 
         return $this->render('projection/index.html.twig', [
-            'groupParameter' => $group,
+            'group' => $group,
             'photos' => $encodedPhotos,
-            'mercure_topic' => "$groupId",
         ]);
     }
 }
