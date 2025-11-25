@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+    app:
+        build: .
+        container_name: symfony_app
+        ports:
+            - "2018:80"
+        volumes:
+#            - .:/app
+            - ./Caddyfile:/etc/caddy/Caddyfile
+        environment:
+            APP_ENV: dev
+            APP_SECRET: changeme
+            DATABASE_URL: "sqlite:///%kernel.project_dir%/var/data.db"
+            MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY}
+            MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY}
+#        restart: unless-stopped
+
+    # Si vous utilisez MySQL/PostgreSQL :
+    # db:
+    #     image: mysql:8.0
+    #     environment:
+    #         MYSQL_ROOT_PASSWORD: root
+    #         MYSQL_DATABASE: symfony
+    #     ports:
+    #         - "3306:3306"

@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Groupe - PhotoParty{% endblock %}
+
+{% block body %}
+    <div class="relative min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12 overflow-hidden font-sans selection:bg-party-purple selection:text-white">
+
+        {# --- DÉCORATION D'ARRIÈRE-PLAN (Blobs) --- #}
+        <div class="absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4 w-[600px] h-[600px] bg-party-yellow/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 w-[500px] h-[500px] bg-party-purple/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 w-full max-w-lg">
+
+            {# --- HEADER --- #}
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-display font-bold text-slate-900 mb-3">
+                    Lancer un <span class="text-transparent bg-clip-text bg-gradient-to-r from-party-pink to-party-purple">Groupe</span>
+                </h1>
+                <p class="text-slate-500 text-lg">
+                    Créez un espace partagé pour rassembler toutes les photos de votre événement.
+                </p>
+            </div>
+
+            {# --- CARTE FORMULAIRE --- #}
+            <div class="bg-white rounded-[32px] shadow-xl shadow-slate-200/60 p-8 md:p-10 border border-slate-100">
+
+                {# Note: form_start gère automatiquement enctype="multipart/form-data" pour les fichiers #}
+                {{ form_start(groupForm, { 'attr': { 'class': 'space-y-6' } }) }}
+
+                {# --- NOM DU GROUPE --- #}
+                <div>
+                    {{ form_label(groupForm.name, 'Nom de l\'événement', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700 mb-2 ml-1' } }) }}
+                    {{ form_widget(groupForm.name, {
+                        'attr': {
+                            'class': 'w-full px-5 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all placeholder:text-slate-400',
+                            'placeholder': 'Ex: Mariage de Julie & Thomas'
+                        }
+                    }) }}
+                    {{ form_errors(groupForm.name, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
+                </div>
+
+                {# --- IMAGE 1 (FILE UPLOAD) --- #}
+                <div>
+                    <div class="flex justify-between items-center mb-2 ml-1">
+                        {# On pointe vers image2File #}
+                        {{ form_label(groupForm.image2File, 'Image secondaire', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700' } }) }}
+                        <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Optionnel</span>
+                    </div>
+
+                    {# Style personnalisé pour l'input file #}
+                    {{ form_widget(groupForm.image1File, {
+                        'attr': {
+                            'class': 'block w-full text-sm text-slate-500
+                                      file:mr-4 file:py-2.5 file:px-4
+                                      file:rounded-full file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-party-purple/10 file:text-party-purple
+                                      hover:file:bg-party-purple/20
+                                      cursor-pointer
+                                      bg-slate-50 border border-slate-200 rounded-xl focus:outline-none p-2'
+                        }
+                    }) }}
+                    {{ form_errors(groupForm.image1File, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
+                </div>
+
+                {# --- IMAGE 2 (FILE UPLOAD) --- #}
+                <div>
+                    <div class="flex justify-between items-center mb-2 ml-1">
+                        {# On pointe vers image2File #}
+                        {{ form_label(groupForm.image2File, 'Image secondaire', { 'label_attr': { 'class': 'block text-sm font-bold text-slate-700' } }) }}
+                        <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Optionnel</span>
+                    </div>
+
+                    {{ form_widget(groupForm.image2File, {
+                        'attr': {
+                            'class': 'block w-full text-sm text-slate-500
+                                      file:mr-4 file:py-2.5 file:px-4
+                                      file:rounded-full file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-party-purple/10 file:text-party-purple
+                                      hover:file:bg-party-purple/20
+                                      cursor-pointer
+                                      bg-slate-50 border border-slate-200 rounded-xl focus:outline-none p-2'
+                        }
+                    }) }}
+                    {{ form_errors(groupForm.image2File, { 'attr': { 'class': 'text-party-pink text-sm mt-2 font-medium ml-1' } }) }}
+                </div>
+
+                {# --- BOUTON SUBMIT --- #}
+                <div class="pt-4">
+                    <button type="submit" class="btn btn-primary w-full text-lg shadow-xl shadow-party-purple/20 bg-party-purple text-white py-3 rounded-xl font-bold hover:bg-party-purple/90 transition-colors">
+                        Créer le groupe
+                    </button>
+                </div>
+
+                {{ form_end(groupForm) }}
+            </div>
+
+            {# --- FOOTER LINK --- #}
+            <div class="text-center mt-8">
+                <a href="/" class="inline-flex items-center text-slate-400 hover:text-slate-600 font-medium transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Annuler et retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

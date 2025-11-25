@@ -1,0 +1,286 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Capturer une photo - PhotoParty{% endblock %}
+
+{% block body %}
+    <div class="relative min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-party-purple selection:text-white overflow-hidden">
+
+        {# --- DÉCOR D'ARRIÈRE-PLAN --- #}
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-party-yellow/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-party-purple/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 w-full max-w-2xl">
+
+            {# --- TITRE (Déplacé en haut pour la hiérarchie) --- #}
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-display font-bold text-slate-900 mb-2">
+                    Capturer ou <span class="text-transparent bg-clip-text bg-gradient-to-r from-party-pink to-party-purple">Télécharger</span>
+                </h1>
+                <p class="text-slate-500">Partagez votre meilleur sourire avec le groupe.</p>
+            </div>
+
+            {# --- CARTE PRINCIPALE --- #}
+            <div class="bg-white rounded-[32px] shadow-xl shadow-slate-200/60 border border-slate-100 p-6 md:p-8">
+
+                <!-- Tabs (Style Pilule Moderne) -->
+                <div class="flex p-1 bg-slate-100 rounded-2xl mb-8">
+                    <button onclick="switchTab('webcam')" id="webcam-tab" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 shadow-sm bg-white text-party-purple">
+                        📷 Webcam
+                    </button>
+                    <button onclick="switchTab('upload')" id="upload-tab" class="flex-1 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 transition-all duration-200">
+                        📁 Galerie
+                    </button>
+                </div>
+
+                {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'id': 'photo-form'}}) }}
+
+                <div class="hidden">
+                    {{ form_widget(form.imageFile, {'attr': {'id': 'symfony-file-input'}}) }}
+                </div>
+
+                <!-- Webcam Tab -->
+                <div id="webcam-content" class="space-y-6">
+                    <!-- Container Vidéo (Ratio 4/3 ou 16/9 selon dispo) -->
+                    <div id="video-container" class="relative w-full bg-black rounded-[24px] overflow-hidden shadow-inner aspect-video group">
+                        <video id="webcam" class="w-full h-full object-cover" autoplay playsinline muted></video>
+
+                        <!-- Placeholder quand la caméra est éteinte -->
+                        <div id="camera-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-white bg-slate-900 z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mb-2 opacity-50">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                            </svg>
+                            <p class="text-sm font-medium opacity-80">Caméra en attente</p>
+                        </div>
+                    </div>
+
+                    <!-- Preview Capture Webcam -->
+                    <div id="webcam-preview" class="hidden">
+                        <img id="captured-image" src="" alt="Photo capturée" class="w-full rounded-[24px] shadow-md border border-slate-200">
+                    </div>
+
+                    <canvas id="canvas" class="hidden"></canvas>
+
+                    <!-- Contrôles Webcam -->
+                    <div id="webcam-controls" class="flex gap-4">
+                        <button type="button" onclick="startWebcam()" id="start-webcam-btn" class="btn btn-primary w-full shadow-lg shadow-party-purple/20">
+                            Activer la caméra
+                        </button>
+                        <button type="button" onclick="capturePhoto()" id="capture-btn" class="hidden btn w-full bg-party-pink text-white hover:bg-party-purple shadow-lg shadow-party-pink/30">
+                            📸 Prendre la photo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload Tab -->
+                <div id="upload-content" class="hidden space-y-6">
+                    <!-- Custom File Input (Dropzone style) -->
+                    <label for="file-input" class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-slate-300 rounded-[24px] bg-slate-50 hover:bg-slate-100 hover:border-party-purple transition-all cursor-pointer group">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                                <svg class="w-8 h-8 text-party-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.008v.008h-.008V10z"></path></svg>
+                            </div>
+                            <p class="mb-2 text-sm text-slate-500 font-bold"><span class="text-party-purple">Cliquez ici</span> pour choisir</p>
+                            <p class="text-xs text-slate-400">JPG, PNG ou GIF</p>
+                        </div>
+                        <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(event)" class="hidden">
+                    </label>
+
+                    <div id="upload-preview" class="hidden">
+                        <img id="uploaded-image" src="" alt="Photo téléchargée" class="w-full rounded-[24px] shadow-md border border-slate-200">
+                    </div>
+                </div>
+
+                <!-- Preview et Actions Finales -->
+                <div id="preview-section" class="hidden mt-8 pt-6 border-t border-slate-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-slate-900 font-bold">Photo prête à l'envoi</p>
+                        <span class="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-md">Sélectionnée</span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <!-- Bouton Cancel (Utilise ta classe .btn-cancel) -->
+                        <button type="button" onclick="cancelPhoto()" class="btn btn-cancel flex-1 justify-center">
+                            ❌ Annuler
+                        </button>
+
+                        <!-- Bouton Send (Utilise ta classe .btn-primary) -->
+                        <button type="submit" id="send-btn" class="btn btn-primary flex-1 justify-center">
+                            Envoyer 🚀
+                        </button>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+
+                <!-- Messages Flash -->
+                <div class="pt-6 empty:hidden">
+                    {% for message in app.flashes('success') %}
+                        <div class="bg-green-100 border border-green-200 text-green-800 px-4 py-3 rounded-xl text-sm font-bold text-center mb-4">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- SCRIPT JAVASCRIPT (Logique des onglets et webcam) --- #}
+    <script>
+        const webcamVideo = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+
+        // NOUVEAU : On récupère le conteneur de la vidéo
+        const videoContainer = document.getElementById('video-container');
+
+        // Sections
+        const webcamContent = document.getElementById('webcam-content');
+        const uploadContent = document.getElementById('upload-content');
+        const previewSection = document.getElementById('preview-section');
+
+        // Previews
+        const webcamPreview = document.getElementById('webcam-preview');
+        const capturedImage = document.getElementById('captured-image');
+        const uploadPreview = document.getElementById('upload-preview');
+        const uploadedImage = document.getElementById('uploaded-image');
+
+        // Buttons
+        const startBtn = document.getElementById('start-webcam-btn');
+        const captureBtn = document.getElementById('capture-btn');
+        const cameraPlaceholder = document.getElementById('camera-placeholder');
+
+        // Tabs
+        const webBtn = document.getElementById('webcam-tab');
+        const uplBtn = document.getElementById('upload-tab');
+
+        let stream = null;
+
+        function switchTab(tab) {
+            cancelPhoto(); // Reset quand on change d'onglet
+
+            if (tab === 'webcam') {
+                webcamContent.classList.remove('hidden');
+                uploadContent.classList.add('hidden');
+
+                webBtn.classList.add('bg-white', 'text-party-purple', 'shadow-sm');
+                webBtn.classList.remove('text-slate-500');
+                uplBtn.classList.remove('bg-white', 'text-party-purple', 'shadow-sm');
+                uplBtn.classList.add('text-slate-500');
+            } else {
+                stopWebcam();
+                webcamContent.classList.add('hidden');
+                uploadContent.classList.remove('hidden');
+
+                uplBtn.classList.add('bg-white', 'text-party-purple', 'shadow-sm');
+                uplBtn.classList.remove('text-slate-500');
+                webBtn.classList.remove('bg-white', 'text-party-purple', 'shadow-sm');
+                webBtn.classList.add('text-slate-500');
+            }
+        }
+
+        async function startWebcam() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
+                webcamVideo.srcObject = stream;
+
+                startBtn.classList.add('hidden');
+                cameraPlaceholder.classList.add('hidden');
+                captureBtn.classList.remove('hidden');
+
+                // On s'assure que le conteneur est visible au démarrage
+                videoContainer.classList.remove('hidden');
+
+            } catch (err) {
+                console.error("Erreur Webcam:", err);
+                alert("Impossible d'accéder à la caméra.");
+            }
+        }
+
+        function stopWebcam() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                webcamVideo.srcObject = null;
+
+                startBtn.classList.remove('hidden');
+                cameraPlaceholder.classList.remove('hidden');
+                captureBtn.classList.add('hidden');
+            }
+        }
+
+        function capturePhoto() {
+            canvas.width = webcamVideo.videoWidth;
+            canvas.height = webcamVideo.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(webcamVideo, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(function(blob) {
+                const file = new File([blob], "capture.jpg", { type: "image/jpeg" });
+                setFileToInput(file);
+
+                // Affiche la preview
+                capturedImage.src = URL.createObjectURL(blob);
+
+                // --- MODIFICATION ICI ---
+                // On cache tout le conteneur vidéo (pas juste la balise video)
+                videoContainer.classList.add('hidden');
+                // ------------------------
+
+                webcamPreview.classList.remove('hidden');
+                previewSection.classList.remove('hidden');
+                document.getElementById('webcam-controls').classList.add('hidden');
+
+                stopWebcam();
+            }, 'image/jpeg', 0.95);
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                setFileToInput(file);
+                uploadedImage.src = URL.createObjectURL(file);
+
+                document.querySelector('label[for="file-input"]').classList.add('hidden');
+                uploadPreview.classList.remove('hidden');
+                previewSection.classList.remove('hidden');
+            }
+        }
+
+        function setFileToInput(file) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            const input = document.querySelector('input[type="file"][name*="imageFile"]');
+            if(input) input.files = dataTransfer.files;
+        }
+
+        function cancelPhoto() {
+            const input = document.querySelector('input[type="file"][name*="imageFile"]');
+            if(input) input.value = "";
+            document.getElementById('file-input').value = "";
+
+            // Reset Webcam UI
+            webcamPreview.classList.add('hidden');
+
+            // --- MODIFICATION ICI ---
+            // On réaffiche le conteneur vidéo
+            videoContainer.classList.remove('hidden');
+            // ------------------------
+
+            document.getElementById('webcam-controls').classList.remove('hidden');
+
+            // Reset Upload UI
+            uploadPreview.classList.add('hidden');
+            document.querySelector('label[for="file-input"]').classList.remove('hidden');
+
+            previewSection.classList.add('hidden');
+
+            const activeTabIsWebcam = document.getElementById('webcam-tab').classList.contains('bg-white');
+            if(activeTabIsWebcam) {
+                startBtn.classList.remove('hidden');
+                cameraPlaceholder.classList.remove('hidden');
+                captureBtn.classList.add('hidden');
+            }
+        }
+    </script>
+{% endblock %}

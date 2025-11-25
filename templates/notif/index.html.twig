@@ -1,0 +1,56 @@
+{# templates/notification/index.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notifications en temps réel</title>
+    <style>
+        .notification {
+            background: #e3f2fd;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>Notifications en temps réel avec Mercure</h1>
+
+<form id="notifyForm">
+    <input type="text" id="messageInput" placeholder="Votre message">
+    <button type="submit">Envoyer notification</button>
+</form>
+
+<h2>Notifications reçues :</h2>
+<div id="notifications"></div>
+
+<script>
+    // S'abonner aux notifications
+    const url = new URL('http://localhost:2018/.well-known/mercure');
+    url.searchParams.append('topic', 'notifications');
+
+    let eventSource = new EventSource(url);
+
+    eventSource.onmessage = event => {
+        const data = JSON.parse(event.data);
+        const div = document.createElement('div');
+        div.className = 'notification';
+        div.textContent = `${new Date(data.timestamp * 1000).toLocaleTimeString()} - ${data.message}`;
+        document.getElementById('notifications').prepend(div);
+    };
+
+    // Formulaire pour envoyer des notifications
+    document.getElementById('notifyForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = document.getElementById('messageInput').value;
+
+        await fetch('/notify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `message=${encodeURIComponent(message)}`
+        });
+
+        document.getElementById('messageInput').value = '';
+    });
+</script>
+</body>
+</html>

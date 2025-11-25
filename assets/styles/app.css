@@ -1,3 +1,123 @@
-body {
-    background-color: skyblue;
+/* assets/styles/app.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- 1. VARIABLES --- */
+:root {
+    --color-yellow: #FFBE0B;
+    --color-orange: #FB5607;
+    --color-pink:   #FF006E;
+    --color-purple: #8338EC;
+    --color-blue:   #3A86FF;
+
+    --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+    --font-display: 'Fredoka', sans-serif;
+}
+
+@layer base {
+    body {
+        @apply bg-slate-50 text-slate-900 antialiased font-sans;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-display font-bold;
+    }
+}
+
+@layer components {
+
+    /* --- BUTTONS GLOBAL --- */
+    .btn {
+        /* On ajoute 'relative' et 'z-10' pour que le texte reste au dessus du dégradé */
+        @apply relative z-10 font-bold py-3 px-6 rounded-xl transition-all duration-300 ease-in-out inline-flex items-center justify-center transform /*hover:-translate-y-0.5*/ disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    /* --- LE fameux BOUTON PRIMARY --- */
+    .btn-primary {
+        /* 1. Le fond de base est NOIR (visible au survol) */
+        @apply bg-party-blue text-white overflow-hidden border-0 shadow-lg shadow-party-purple/30;
+    }
+
+    /* 2. Le Dégradé est un calque par-dessus (visible par défaut) */
+    .btn-primary::before {
+        content: '';
+        @apply absolute inset-0 bg-gradient-to-r from-party-purple to-party-blue transition-opacity duration-300 ease-in-out;
+        z-index: -1; /* Derrière le texte */
+        opacity: 1;  /* Visible à 100% au début */
+    }
+
+    /* 3. Au survol, on cache le dégradé pour révéler le noir */
+    .btn-primary:hover::before {
+        opacity: 0;
+    }
+
+    /* --- AUTRES BOUTONS --- */
+    .btn-secondary {
+        @apply bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-party-purple;
+    }
+
+    .btn-danger {
+        @apply bg-white text-red-600 border border-red-100 hover:bg-red-50;
+    }
+
+    .btn-cancel {
+        @apply bg-white border border-slate-200 text-slate-400 shadow-sm;
+        /* Interaction : devient "Party Pink" au survol */
+        @apply hover:text-party-pink hover:bg-party-pink/5 hover:border-party-pink/30;
+    }
+
+    /* --- CARDS --- */
+    .card {
+        @apply bg-white rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-100 p-8;
+    }
+
+    /* --- INPUTS (Sans le vert !) --- */
+    .input {
+        @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all placeholder:text-slate-400;
+    }
+
+    /* --- LINKS --- */
+    a:not(.btn) {
+        /* On passe du Violet au BLEU au survol */
+        @apply text-party-purple hover:text-party-blue transition-colors font-medium cursor-pointer decoration-party-blue/30 hover:underline underline-offset-4;
+    }
+    /*a:not(.btn) {*/
+    /*    !* On passe du Violet à l'ORANGE au survol *!*/
+    /*    @apply text-party-purple hover:text-party-orange transition-colors font-medium cursor-pointer;*/
+    /*}*/
+}
+
+/* --- OVERRIDES SYMFONY FORMS --- */
+form label {
+    @apply block text-sm font-bold text-slate-700 mb-2 ml-1;
+}
+
+/* Ciblage de tous les inputs pour appliquer le style violet */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="url"],
+form input[type="number"],
+form input[type="date"],
+form textarea,
+form select {
+    @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-party-purple focus:border-transparent outline-none transition-all;
+}
+
+form button[type="submit"] {
+    @apply btn w-full; /* Base commune */
+}
+
+form button[type="submit"]:not(.btn-cancel) {
+    @apply btn-primary; /* Style Noir par défaut, sauf si c'est un btn-cancel */
+}
+
+
+/* Erreurs */
+.form-error {
+    @apply text-party-pink text-sm mt-2 font-medium;
+}
+.form-error-list li {
+    @apply text-party-pink text-sm mt-1;
 }

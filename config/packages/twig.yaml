@@ -1,6 +1,11 @@
 twig:
     file_name_pattern: '*.twig'
 
+    globals:
+        mercure_url: '%env(MERCURE_PUBLIC_URL)%'
+        default_path_image: '%env(DEFAULT_PATH_IMAGE)%'
+        default_path_image_group: '%env(DEFAULT_PATH_IMAGE_GROUP)%'
+
 when@test:
     twig:
         strict_variables: true
